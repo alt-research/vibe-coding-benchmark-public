@@ -383,7 +383,7 @@ function Leaderboard() {
           <h1 className="text-2xl font-bold text-slate-900">Leaderboard</h1>
           <p className="text-sm text-slate-500 mt-1">AI coding agent performance on 180 benchmark tasks</p>
         </div>
-        <Badge variant="outline">Updated Jan 21, 2026</Badge>
+        <Badge variant="outline">Updated Jan 27, 2026</Badge>
       </div>
 
       {/* Summary Cards */}
