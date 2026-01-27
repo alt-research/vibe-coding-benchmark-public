@@ -1,0 +1,24 @@
+name: Cryptocurrency Payments
+category: api-integrations
+subcategory: payment
+description: Accept crypto payments with Coinbase Commerce
+difficulty: hard
+stack: nodejs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/crypto.test.ts
+
+tags:
+  - typescript
+  - crypto
+  - coinbase
+  - payments
+  - blockchain
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,24 @@
+name: Automated Code Review Agent
+category: ai-integration
+subcategory: agents
+description: Build LLM agent for automated PR code review
+difficulty: hard
+stack: python
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/test_review_agent.py
+
+tags:
+  - python
+  - agent
+  - code-review
+  - github
+  - llm
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

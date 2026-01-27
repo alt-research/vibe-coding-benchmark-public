@@ -1,0 +1,30 @@
+name: Pricing Card Component
+category: frontend
+subcategory: figma-to-code
+description: Build a pixel-perfect pricing card component from design specs
+difficulty: medium
+stack: nextjs
+timeout: 300
+tokenLimit: 100000
+
+tests:
+  visual: tests/visual/diff.test.ts
+  functional: tests/visual/interaction.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+weight: 1.0
+
+tags:
+  - react
+  - tailwind
+  - ui-component
+  - visual-testing
+  - responsive
+
+evaluation:
+  functional: 0.2
+  visual: 0.5
+  quality: 0.2
+  speed: 0.1

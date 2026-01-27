@@ -1,0 +1,16 @@
+name: Real-time Stream Processing
+category: glue-code
+subcategory: advanced
+description: Build stream processing pipeline with windowing, watermarks, exactly-once semantics, and backpressure handling
+difficulty: hard
+stack: python
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/stream_test.py
+tags: [python, kafka, flink, streaming, watermarks]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

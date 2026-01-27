@@ -1,0 +1,16 @@
+name: Distributed Rate Limiter
+category: api-integrations
+subcategory: advanced
+description: Build distributed rate limiter with multiple algorithms, quota management, and burst handling
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/ratelimit_test.go
+tags: [go, rate-limiting, redis, distributed, algorithms]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

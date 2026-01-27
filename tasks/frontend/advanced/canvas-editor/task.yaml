@@ -1,0 +1,16 @@
+name: Advanced Canvas Editor
+category: frontend
+subcategory: advanced
+description: Build canvas-based editor with layers, transformations, snapping, and plugin architecture
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/canvas.test.ts
+tags: [typescript, canvas, fabric.js, editor, layers]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

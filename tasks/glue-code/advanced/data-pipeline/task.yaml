@@ -1,0 +1,16 @@
+name: Orchestrated Data Pipeline
+category: glue-code
+subcategory: advanced
+description: Build data pipeline with DAG orchestration, dependency management, data quality checks, and SLA monitoring
+difficulty: hard
+stack: python
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/pipeline_test.py
+tags: [python, airflow, dbt, data-quality, orchestration]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

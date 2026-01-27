@@ -1,0 +1,16 @@
+name: Feature Flags with A/B Testing
+category: saas-core
+subcategory: advanced
+description: Build feature flag system with A/B testing, gradual rollouts, user targeting, and statistical significance
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/flags.test.ts
+tags: [typescript, feature-flags, ab-testing, statistics, redis]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

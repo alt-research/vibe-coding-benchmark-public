@@ -1,0 +1,16 @@
+name: API Gateway with Plugins
+category: api-integrations
+subcategory: advanced
+description: Build extensible API gateway with plugin system, request transformation, and traffic management
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/gateway_test.go
+tags: [go, api-gateway, plugins, proxy, traffic]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

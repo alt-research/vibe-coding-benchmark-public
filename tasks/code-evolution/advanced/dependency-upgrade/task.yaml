@@ -1,0 +1,16 @@
+name: Automated Dependency Upgrade
+category: code-evolution
+subcategory: advanced
+description: Build dependency upgrade tool with breaking change detection, migration scripts, and test validation
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/upgrade.test.ts
+tags: [typescript, dependencies, semver, migration, testing]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

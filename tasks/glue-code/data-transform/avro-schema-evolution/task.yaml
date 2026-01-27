@@ -1,0 +1,24 @@
+name: Avro Schema Evolution Handler
+category: glue-code
+subcategory: data-transform
+description: Handle Avro schema evolution with forward/backward compatibility in Java
+difficulty: hard
+stack: java
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/AvroEvolutionTest.java
+
+tags:
+  - java
+  - avro
+  - schema-evolution
+  - kafka
+  - data-pipeline
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

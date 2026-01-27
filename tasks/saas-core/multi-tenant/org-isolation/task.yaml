@@ -1,0 +1,27 @@
+name: Multi-Tenant Organization Isolation
+category: saas-core
+subcategory: multi-tenant
+description: Implement database-per-tenant isolation with dynamic connection routing
+difficulty: hard
+stack: nodejs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/isolation.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - typescript
+  - multi-tenancy
+  - database
+  - isolation
+  - saas
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,24 @@
+name: Mobile App Screen
+category: frontend
+subcategory: figma-to-code
+description: Build mobile app screen with React Native
+difficulty: medium
+stack: react-native
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/screen.test.tsx
+
+tags:
+  - react-native
+  - mobile
+  - ui
+  - typescript
+  - expo
+
+evaluation:
+  functional: 0.3
+  visual: 0.4
+  quality: 0.2
+  speed: 0.1

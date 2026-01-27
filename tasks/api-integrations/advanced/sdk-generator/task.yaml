@@ -1,0 +1,16 @@
+name: Multi-Language SDK Generator
+category: api-integrations
+subcategory: advanced
+description: Build SDK generator from OpenAPI with type-safe clients, pagination, and retry logic
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/sdkgen.test.ts
+tags: [typescript, openapi, codegen, sdk, multi-language]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

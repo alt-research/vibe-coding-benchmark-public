@@ -1,0 +1,24 @@
+name: Natural Language to SQL
+category: ai-integration
+subcategory: function-calling
+description: Convert natural language to SQL queries with Python
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_nl2sql.py
+
+tags:
+  - python
+  - sql
+  - llm
+  - nlp
+  - database
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

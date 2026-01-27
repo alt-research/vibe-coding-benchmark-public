@@ -1,0 +1,16 @@
+name: GDPR Compliance Engine
+category: saas-core
+subcategory: advanced
+description: Build GDPR compliance system with data subject requests, consent management, and data lineage tracking
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/gdpr.test.ts
+tags: [typescript, gdpr, privacy, compliance, data-governance]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

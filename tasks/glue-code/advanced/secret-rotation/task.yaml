@@ -1,0 +1,16 @@
+name: Automated Secret Rotation
+category: glue-code
+subcategory: advanced
+description: Build secret rotation system with zero-downtime rotation, multi-cloud vault integration, and lease management
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/secrets_test.go
+tags: [go, vault, aws-secrets, rotation, security]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

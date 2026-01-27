@@ -1,0 +1,24 @@
+name: Flask to FastAPI Migration
+category: code-evolution
+subcategory: legacy-migration
+description: Migrate Flask application to FastAPI
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_api.py
+
+tags:
+  - python
+  - flask
+  - fastapi
+  - migration
+  - async
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

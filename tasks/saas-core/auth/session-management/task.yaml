@@ -1,0 +1,27 @@
+name: Secure Session Management
+category: saas-core
+subcategory: auth
+description: Implement secure session handling with Redis in Rust
+difficulty: hard
+stack: rust
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/session_test.rs
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - rust
+  - actix-web
+  - sessions
+  - redis
+  - security
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

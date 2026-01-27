@@ -1,0 +1,24 @@
+name: Sync to Async Refactor
+category: code-evolution
+subcategory: performance
+description: Convert sync I/O to async for performance
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_async.py
+
+tags:
+  - python
+  - async
+  - performance
+  - io
+  - refactoring
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

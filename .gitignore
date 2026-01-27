@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+
+# Environment files (NEVER commit)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Secrets and credentials (NEVER commit)
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+service-account*.json
+*-credentials.json
+
+# Build outputs
+dist/
+build/
+.turbo/
+target/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+coverage/
+.nyc_output/
+
+# Docker
+docker-compose.override.yml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# TypeScript
+*.tsbuildinfo
+
+# Workspaces (temporary execution directories)
+.workspaces/

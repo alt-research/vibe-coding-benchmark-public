@@ -1,0 +1,16 @@
+name: Chain of Thought Orchestration
+category: ai-integration
+subcategory: advanced
+description: Build reasoning orchestration with step verification, branching logic, and self-correction mechanisms
+difficulty: hard
+stack: python
+timeout: 1500
+tokenLimit: 300000
+tests:
+  functional: tests/test_reasoning.py
+tags: [python, reasoning, chain-of-thought, verification, llm]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,208 @@
+name: Initialize Vercel Project
+
+# Unified workflow for both single-repo and monorepo structures
+#
+# Triggers when creating branches:
+# - Single repo: release/vercel/{staging|production}
+# - Monorepo: release/vercel/{staging|production}/{subproject_dir}
+#
+# This workflow automatically creates or links the Vercel project
+# when a new deployment branch is created.
+
+env:
+  NODE_VERSION: "22.x"
+
+on:
+  create:
+    # Triggers on branch creation
+
+# Prevent duplicate init runs for the same branch creation
+concurrency:
+  group: vercel-project-init-${{ github.event.ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Determine environment from branch
+    runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'release/vercel/')
+    outputs:
+      github_environment: ${{ steps.compute.outputs.github_environment }}
+      project_name: ${{ steps.compute.outputs.project_name }}
+      env_name: ${{ steps.compute.outputs.env_name }}
+      subproject_dir: ${{ steps.compute.outputs.subproject_dir }}
+      app_dir: ${{ steps.compute.outputs.app_dir }}
+    steps:
+      - name: Compute environment and naming
+        id: compute
+        shell: bash
+        run: |
+          BRANCH="${{ github.event.ref }}"
+
+          # Parse: release/vercel/{environment}[/{subproject}]
+          if [[ "$BRANCH" =~ ^release/vercel/([^/]+)(/(.+))?$ ]]; then
+            ENV_NAME="${BASH_REMATCH[1]}"
+            SUBDIR="${BASH_REMATCH[3]}"  # Empty for single repo
+          else
+            echo "Branch does not match expected pattern: $BRANCH" >&2
+            echo "Expected: release/vercel/{staging|production}[/{subproject}]" >&2
+            exit 1
+          fi
+
+          # Determine app directory
+          if [[ -n "$SUBDIR" ]]; then
+            APP_DIR="$SUBDIR"
+          else
+            APP_DIR="."
+          fi
+
+          # Map to GitHub Action environment
+          if [[ "$ENV_NAME" == "production" ]]; then
+            GITHUB_ENVIRONMENT="vercel-production"
+          else
+            GITHUB_ENVIRONMENT="vercel-staging"
+          fi
+
+          # Derive project name
+          REPO_FULL="${{ github.repository }}"
+          REPO_NAME="${REPO_FULL##*/}"
+
+          if [[ -n "$SUBDIR" ]]; then
+            # Monorepo: <repo>-<subproject>-<environment>
+            SUBDIR_HYPHEN="${SUBDIR//\//-}"
+            PROJECT_NAME="${REPO_NAME}-${SUBDIR_HYPHEN}-${ENV_NAME}"
+          else
+            # Single repo: <repo>-<environment>
+            PROJECT_NAME="${REPO_NAME}-${ENV_NAME}"
+          fi
+
+          echo "github_environment=$GITHUB_ENVIRONMENT" >> "$GITHUB_OUTPUT"
+          echo "project_name=$PROJECT_NAME" >> "$GITHUB_OUTPUT"
+          echo "env_name=$ENV_NAME" >> "$GITHUB_OUTPUT"
+          echo "subproject_dir=$SUBDIR" >> "$GITHUB_OUTPUT"
+          echo "app_dir=$APP_DIR" >> "$GITHUB_OUTPUT"
+
+          echo "Environment: $ENV_NAME"
+          echo "Project Name: $PROJECT_NAME"
+          echo "App Directory: $APP_DIR"
+
+  init-vercel-project:
+    name: Link project to Vercel and create project
+    runs-on: ubuntu-latest
+    needs: prepare
+    timeout-minutes: 15
+    environment: ${{ needs.prepare.outputs.github_environment }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      GH_VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    steps:
+      - name: Validate required secrets
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "Error: VERCEL_TOKEN secret is not set" >&2
+            exit 1
+          fi
+          if [ -z "${{ secrets.VERCEL_ORG_ID }}" ]; then
+            echo "Error: VERCEL_ORG_ID secret is not set" >&2
+            exit 1
+          fi
+          echo "All required secrets are present"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Prepare project folder
+        run: |
+          TARGET_DIR="${RUNNER_TEMP}/${{ needs.prepare.outputs.project_name }}"
+          APP_DIR="${{ needs.prepare.outputs.app_dir }}"
+          mkdir -p "$TARGET_DIR"
+
+          # Copy essential files for linking
+          if [ -f "$APP_DIR/package.json" ]; then
+            cp "$APP_DIR/package.json" "$TARGET_DIR/"
+          fi
+          if [ -f "$APP_DIR/vercel.json" ]; then
+            cp "$APP_DIR/vercel.json" "$TARGET_DIR/"
+          fi
+          if [ -f "$APP_DIR/.vercelignore" ]; then
+            cp "$APP_DIR/.vercelignore" "$TARGET_DIR/"
+          fi
+
+          echo "Prepared folder: $TARGET_DIR"
+          ls -la "$TARGET_DIR"
+
+      - name: Link project to Vercel (create project if needed)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          cd "${RUNNER_TEMP}/${{ needs.prepare.outputs.project_name }}"
+          set -e
+          mkdir -p .vercel
+
+          # Link the project (creates if doesn't exist)
+          if vercel link --yes --token "$VERCEL_TOKEN" --scope "$GH_VERCEL_ORG_ID" --project "${{ needs.prepare.outputs.project_name }}"; then
+            echo "Successfully linked to Vercel project: ${{ needs.prepare.outputs.project_name }}"
+          else
+            LINK_EXIT_CODE=$?
+            echo "Warning: vercel link command exited with code $LINK_EXIT_CODE"
+
+            if [ ! -f .vercel/project.json ]; then
+              echo "Error: No .vercel/project.json found after link attempt" >&2
+              exit 1
+            fi
+          fi
+
+          # Verify project info
+          if [ -f .vercel/project.json ]; then
+            echo "Linked Vercel project:"
+            cat .vercel/project.json
+          else
+            echo "Error: .vercel/project.json not found" >&2
+            exit 1
+          fi
+        timeout-minutes: 5
+
+      - name: Output Summary
+        if: always()
+        run: |
+          cd "${RUNNER_TEMP}/${{ needs.prepare.outputs.project_name }}"
+          PROJECT_ID=$(node -p "require('./.vercel/project.json').projectId" 2>/dev/null || echo "unknown")
+          ORG_ID=$(node -p "require('./.vercel/project.json').orgId" 2>/dev/null || echo "unknown")
+
+          echo "Vercel Project ID: $PROJECT_ID"
+          echo "Vercel Org ID: $ORG_ID"
+
+          {
+            echo "## 🎉 Vercel Project Initialized";
+            echo "";
+            echo "### Project Information";
+            echo "- **Project Name**: \`${{ needs.prepare.outputs.project_name }}\`";
+            echo "- **Project ID**: \`$PROJECT_ID\`";
+            echo "- **Organization ID**: \`$ORG_ID\`";
+            echo "";
+            echo "### Branch Information";
+            echo "- **Branch**: \`${{ github.event.ref }}\`";
+            echo "- **Environment**: \`${{ needs.prepare.outputs.env_name }}\`";
+            echo "- **App Directory**: \`${{ needs.prepare.outputs.app_dir }}\`";
+            if [ -n "${{ needs.prepare.outputs.subproject_dir }}" ]; then
+              echo "- **Subproject**: \`${{ needs.prepare.outputs.subproject_dir }}\`";
+            fi
+            echo "";
+            echo "### Next Steps";
+            echo "Push to this branch to trigger automatic deployment.";
+            echo "";
+            if [ "$PROJECT_ID" != "unknown" ]; then
+              echo "- **Vercel Dashboard**: https://vercel.com/dashboard/$ORG_ID/$PROJECT_ID";
+            fi
+            echo "- **Workflow Run**: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})";
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,24 @@
+name: LLM-Driven API Orchestrator
+category: ai-integration
+subcategory: function-calling
+description: Build API orchestration with LLM function calling
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/orchestrator.test.ts
+
+tags:
+  - typescript
+  - function-calling
+  - api
+  - llm
+  - orchestration
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

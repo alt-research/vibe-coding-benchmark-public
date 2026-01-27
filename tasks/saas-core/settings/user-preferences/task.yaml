@@ -1,0 +1,27 @@
+name: User Preferences Panel
+category: saas-core
+subcategory: settings
+description: Build a user settings page with theme, notifications, and profile preferences
+difficulty: medium
+stack: nextjs-supabase
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/settings.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - settings
+  - preferences
+  - theme
+  - notifications
+  - profile
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

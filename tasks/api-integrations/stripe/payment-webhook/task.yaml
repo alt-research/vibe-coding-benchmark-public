@@ -1,0 +1,31 @@
+name: Stripe Payment Webhook Handler
+category: api-integrations
+subcategory: stripe
+description: Implement Stripe webhook handler to process payment events and update order status
+difficulty: medium
+stack: nodejs
+timeout: 180
+tokenLimit: 60000
+
+promptFile: PROMPT.md
+
+tests:
+  functional: tests/webhook.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+weight: 1.2
+tags:
+  - typescript
+  - nodejs
+  - stripe
+  - webhooks
+  - payments
+
+evaluation:
+  functional: 0.5
+  visual: 0.0
+  quality: 0.25
+  cost: 0.15
+  speed: 0.1

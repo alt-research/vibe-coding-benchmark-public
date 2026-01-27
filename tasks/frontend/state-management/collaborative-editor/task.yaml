@@ -1,0 +1,24 @@
+name: Real-time Collaborative Editor
+category: frontend
+subcategory: state-management
+description: Build collaborative editing with Vue 3 and Y.js
+difficulty: hard
+stack: vue
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/collab.test.ts
+
+tags:
+  - vue
+  - yjs
+  - crdt
+  - collaboration
+  - realtime
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,24 @@
+name: Real-time Streaming Charts
+category: frontend
+subcategory: visualization
+description: Build live updating charts with React
+difficulty: medium
+stack: nextjs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/charts.test.tsx
+
+tags:
+  - react
+  - charts
+  - realtime
+  - d3
+  - websocket
+
+evaluation:
+  functional: 0.4
+  visual: 0.3
+  quality: 0.2
+  speed: 0.1

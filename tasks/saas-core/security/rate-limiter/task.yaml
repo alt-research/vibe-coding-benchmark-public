@@ -1,0 +1,27 @@
+name: API Rate Limiter
+category: saas-core
+subcategory: security
+description: Implement a distributed rate limiter with sliding window algorithm
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/rate-limit.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - security
+  - rate-limiting
+  - redis
+  - middleware
+  - api
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

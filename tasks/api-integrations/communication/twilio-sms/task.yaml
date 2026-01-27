@@ -1,0 +1,24 @@
+name: Twilio SMS Integration
+category: api-integrations
+subcategory: communication
+description: Implement SMS notifications with Twilio
+difficulty: easy
+stack: python
+timeout: 300
+tokenLimit: 80000
+
+tests:
+  functional: tests/test_twilio.py
+
+tags:
+  - python
+  - twilio
+  - sms
+  - notifications
+  - messaging
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

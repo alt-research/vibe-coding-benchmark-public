@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+
+  test:
+    image: mcr.microsoft.com/playwright:v1.41.0-jammy
+    depends_on:
+      - app
+    environment:
+      - BASE_URL=http://app:3000
+    volumes:
+      - ./tests:/app/tests:ro
+      - ./reference:/app/reference:ro
+      - ./screenshots:/app/screenshots
+    command: npx playwright test

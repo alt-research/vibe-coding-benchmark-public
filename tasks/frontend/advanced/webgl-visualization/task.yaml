@@ -1,0 +1,16 @@
+name: WebGL Data Visualization
+category: frontend
+subcategory: advanced
+description: Build WebGL-based visualization for millions of data points with interactions and real-time updates
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/webgl.test.ts
+tags: [typescript, webgl, three.js, visualization, performance]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

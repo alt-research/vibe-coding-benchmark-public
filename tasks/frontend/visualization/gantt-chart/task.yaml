@@ -1,0 +1,24 @@
+name: Project Gantt Chart
+category: frontend
+subcategory: visualization
+description: Build interactive Gantt chart with React
+difficulty: hard
+stack: nextjs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/gantt.test.tsx
+
+tags:
+  - react
+  - gantt
+  - project-management
+  - drag-drop
+  - timeline
+
+evaluation:
+  functional: 0.4
+  visual: 0.25
+  quality: 0.2
+  speed: 0.15

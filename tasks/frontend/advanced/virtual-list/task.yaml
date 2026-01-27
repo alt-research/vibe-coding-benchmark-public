@@ -1,0 +1,16 @@
+name: Virtual List with Variable Heights
+category: frontend
+subcategory: advanced
+description: Build virtualized list supporting variable row heights, sticky headers, infinite scroll, and keyboard navigation
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/virtuallist.test.ts
+tags: [typescript, react, virtualization, performance, accessibility]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

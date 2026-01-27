@@ -1,0 +1,24 @@
+name: Monolith to Modules
+category: code-evolution
+subcategory: refactoring
+description: Extract modules from monolith in TypeScript
+difficulty: hard
+stack: nodejs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/modules.test.ts
+
+tags:
+  - typescript
+  - modular
+  - refactoring
+  - architecture
+  - monolith
+
+evaluation:
+  functional: 0.4
+  quality: 0.4
+  cost: 0.1
+  speed: 0.1

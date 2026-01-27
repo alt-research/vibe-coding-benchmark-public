@@ -1,0 +1,24 @@
+{
+  "name": "@vibecodingbench/evaluator",
+  "version": "0.1.0",
+  "description": "Evaluation engine for VibeCodingBench",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "drizzle-kit": "^0.31.8",
+    "pixelmatch": "^6.0.0",
+    "playwright": "^1.48.0",
+    "pngjs": "^7.0.0",
+    "vite": "7.3.1"
+  },
+  "devDependencies": {
+    "@types/pngjs": "^6.0.0",
+    "eslint": "^9.0.0",
+    "vitest": "^4.0.17"
+  }
+}

@@ -1,0 +1,27 @@
+name: Full-Text Search with Elasticsearch
+category: saas-core
+subcategory: search
+description: Implement full-text search across multiple entities with Elasticsearch
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/search.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - typescript
+  - elasticsearch
+  - search
+  - indexing
+  - full-text
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

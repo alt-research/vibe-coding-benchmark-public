@@ -1,0 +1,27 @@
+name: Transactional Email Service
+category: api-integrations
+subcategory: email
+description: Integrate transactional email sending with templates and tracking
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/email.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - email
+  - sendgrid
+  - resend
+  - templates
+  - tracking
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

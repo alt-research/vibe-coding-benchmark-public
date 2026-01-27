@@ -1,0 +1,24 @@
+name: Twitter API Integration
+category: api-integrations
+subcategory: social
+description: Post tweets and monitor mentions with Python
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_twitter.py
+
+tags:
+  - python
+  - twitter
+  - social
+  - api
+  - posting
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

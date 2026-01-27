@@ -1,0 +1,24 @@
+name: Document Duplicate Detection
+category: ai-integration
+subcategory: embeddings
+description: Find near-duplicate documents using embeddings
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_duplicates.py
+
+tags:
+  - python
+  - embeddings
+  - deduplication
+  - similarity
+  - nlp
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

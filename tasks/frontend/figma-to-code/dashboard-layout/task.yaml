@@ -1,0 +1,25 @@
+name: Admin Dashboard Layout
+category: frontend
+subcategory: figma-to-code
+description: Build admin dashboard UI with Vue 3
+difficulty: medium
+stack: vue
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  visual: tests/visual.test.ts
+  functional: tests/dashboard.test.ts
+
+tags:
+  - vue
+  - dashboard
+  - admin
+  - layout
+  - typescript
+
+evaluation:
+  functional: 0.3
+  visual: 0.4
+  quality: 0.2
+  speed: 0.1

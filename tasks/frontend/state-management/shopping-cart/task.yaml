@@ -1,0 +1,24 @@
+name: Shopping Cart State Management
+category: frontend
+subcategory: state-management
+description: Build complex cart with Redux Toolkit
+difficulty: medium
+stack: nextjs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/cart.test.tsx
+
+tags:
+  - react
+  - redux
+  - cart
+  - e-commerce
+  - state
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

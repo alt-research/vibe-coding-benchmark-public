@@ -1,0 +1,16 @@
+name: AST-Based Code Refactoring
+category: code-evolution
+subcategory: advanced
+description: Build AST-based refactoring tool for automated code transformations with semantic preservation
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/ast.test.ts
+tags: [typescript, ast, refactoring, babel, jscodeshift]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

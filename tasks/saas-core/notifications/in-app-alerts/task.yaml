@@ -1,0 +1,27 @@
+name: Real-time In-App Notifications
+category: saas-core
+subcategory: notifications
+description: Build real-time in-app notification system with Java Spring
+difficulty: medium
+stack: java
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/NotificationTest.java
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - java
+  - spring-boot
+  - websocket
+  - notifications
+  - real-time
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

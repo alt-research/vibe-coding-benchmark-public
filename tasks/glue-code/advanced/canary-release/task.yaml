@@ -1,0 +1,16 @@
+name: Canary Release Automation
+category: glue-code
+subcategory: advanced
+description: Build canary release system with metric-based promotion, automatic rollback, and progressive delivery
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/canary_test.go
+tags: [go, kubernetes, flagger, argo-rollouts, canary]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

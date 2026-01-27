@@ -1,0 +1,30 @@
+name: PDF Q&A RAG Chatbot
+category: ai-integration
+subcategory: rag-chatbot
+description: Build a RAG chatbot that answers questions from PDF documents
+difficulty: hard
+stack: python
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/functional/qa.test.py
+
+docker:
+  compose: docker-compose.yaml
+
+weight: 2.0
+
+tags:
+  - rag
+  - chatbot
+  - pdf
+  - langchain
+  - embeddings
+  - vector-db
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

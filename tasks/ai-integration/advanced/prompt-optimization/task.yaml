@@ -1,0 +1,16 @@
+name: Automated Prompt Optimization
+category: ai-integration
+subcategory: advanced
+description: Build prompt optimization system with automatic tuning, A/B testing, version control, and performance tracking
+difficulty: hard
+stack: python
+timeout: 1500
+tokenLimit: 300000
+tests:
+  functional: tests/test_prompt_opt.py
+tags: [python, prompts, optimization, dspy, evaluation]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

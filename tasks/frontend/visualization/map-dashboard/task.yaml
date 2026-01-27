@@ -1,0 +1,24 @@
+name: Geographic Map Dashboard
+category: frontend
+subcategory: visualization
+description: Build interactive map dashboard with Vue 3
+difficulty: hard
+stack: vue
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/map.test.ts
+
+tags:
+  - vue
+  - mapbox
+  - visualization
+  - geospatial
+  - dashboard
+
+evaluation:
+  functional: 0.4
+  visual: 0.3
+  quality: 0.2
+  speed: 0.1

@@ -1,0 +1,16 @@
+name: API Versioning Strategy
+category: saas-core
+subcategory: advanced
+description: Implement API versioning with content negotiation, deprecation workflow, and backward compatibility
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/versioning_test.go
+tags: [go, api, versioning, rest, openapi]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,27 @@
+name: Usage-Based Metering System
+category: saas-core
+subcategory: billing
+description: Implement API usage tracking and metered billing with Go
+difficulty: hard
+stack: go
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/metering_test.go
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - go
+  - metering
+  - billing
+  - api
+  - usage-tracking
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,24 @@
+name: Advanced Data Grid
+category: frontend
+subcategory: components
+description: Build data grid with virtual scrolling in React
+difficulty: hard
+stack: nextjs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/grid.test.tsx
+
+tags:
+  - react
+  - data-grid
+  - virtual-scroll
+  - typescript
+  - performance
+
+evaluation:
+  functional: 0.4
+  visual: 0.2
+  quality: 0.25
+  speed: 0.15

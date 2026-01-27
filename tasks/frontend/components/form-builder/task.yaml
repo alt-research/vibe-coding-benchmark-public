@@ -1,0 +1,28 @@
+name: Dynamic Form Builder
+category: frontend
+subcategory: components
+description: Build a drag-and-drop form builder with live preview and JSON export
+difficulty: hard
+stack: nextjs-supabase
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/form-builder.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - forms
+  - drag-drop
+  - builder
+  - react
+  - validation
+
+evaluation:
+  functional: 0.4
+  visual: 0.25
+  quality: 0.2
+  cost: 0.1
+  speed: 0.05

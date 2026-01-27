@@ -1,0 +1,16 @@
+name: Reliable Webhook Delivery
+category: saas-core
+subcategory: advanced
+description: Build webhook delivery system with guaranteed delivery, signature verification, and replay protection
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/webhook.test.ts
+tags: [typescript, webhooks, queue, reliability, hmac]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

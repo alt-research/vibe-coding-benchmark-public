@@ -1,0 +1,24 @@
+name: Fix Memory Leaks
+category: code-evolution
+subcategory: performance
+description: Fix memory leaks in Node.js application
+difficulty: hard
+stack: nodejs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/memory.test.ts
+
+tags:
+  - typescript
+  - nodejs
+  - memory
+  - performance
+  - debugging
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

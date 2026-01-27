@@ -1,0 +1,16 @@
+name: Concurrency Bug Detection
+category: code-evolution
+subcategory: advanced
+description: Build concurrency analysis tool with race detection, deadlock prevention, and fix automation
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/concurrency_test.go
+tags: [go, concurrency, race-detection, deadlock, static-analysis]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

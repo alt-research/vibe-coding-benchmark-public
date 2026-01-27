@@ -1,0 +1,24 @@
+name: Receipt Scanner with OCR + LLM
+category: ai-integration
+subcategory: structured-output
+description: Extract receipt data using OCR and LLM in TypeScript
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/receipt.test.ts
+
+tags:
+  - typescript
+  - ocr
+  - llm
+  - receipt
+  - vision
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

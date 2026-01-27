@@ -1,0 +1,16 @@
+name: Continuous Performance Profiling
+category: code-evolution
+subcategory: advanced
+description: Build continuous profiling system with flame graphs, regression detection, and optimization suggestions
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/profiling_test.go
+tags: [go, profiling, performance, pprof, flamegraph]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,16 @@
+name: Saga Orchestration Pattern
+category: saas-core
+subcategory: advanced
+description: Implement saga orchestration for distributed transactions with compensation, timeout handling, and state persistence
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/saga.test.ts
+tags: [typescript, saga, distributed-transactions, postgresql, temporal]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,27 @@
+name: React Class to Hooks Migration
+category: code-evolution
+subcategory: refactoring
+description: Migrate React class components to functional components with hooks
+difficulty: medium
+stack: nextjs-supabase
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/hooks.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - react
+  - hooks
+  - refactoring
+  - migration
+  - typescript
+
+evaluation:
+  functional: 0.4
+  quality: 0.3
+  cost: 0.15
+  speed: 0.15

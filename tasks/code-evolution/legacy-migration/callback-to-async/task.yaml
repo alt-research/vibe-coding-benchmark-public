@@ -1,0 +1,24 @@
+name: Callback to Async/Await
+category: code-evolution
+subcategory: legacy-migration
+description: Migrate callback hell to async/await in TypeScript
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/async.test.ts
+
+tags:
+  - typescript
+  - async
+  - refactoring
+  - callbacks
+  - promises
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

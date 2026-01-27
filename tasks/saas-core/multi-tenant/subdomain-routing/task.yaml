@@ -1,0 +1,27 @@
+name: Subdomain-Based Tenant Routing
+category: saas-core
+subcategory: multi-tenant
+description: Implement subdomain routing for multi-tenant applications in Go
+difficulty: medium
+stack: go
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/routing_test.go
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - go
+  - multi-tenancy
+  - routing
+  - subdomains
+  - middleware
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

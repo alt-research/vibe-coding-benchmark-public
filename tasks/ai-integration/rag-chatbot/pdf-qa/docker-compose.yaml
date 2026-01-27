@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CHROMA_PERSIST_DIR=/data/chroma
+    volumes:
+      - chroma_data:/data/chroma
+      - ./fixtures:/app/fixtures:ro
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    depends_on:
+      - app
+    environment:
+      - BASE_URL=http://app:8000
+    volumes:
+      - ./tests:/app/tests:ro
+      - ./fixtures:/app/fixtures:ro
+
+volumes:
+  chroma_data:

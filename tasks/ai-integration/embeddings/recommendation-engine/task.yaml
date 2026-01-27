@@ -1,0 +1,24 @@
+name: Content Recommendation Engine
+category: ai-integration
+subcategory: embeddings
+description: Build content recommendations with embeddings in Go
+difficulty: medium
+stack: go
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/recommend_test.go
+
+tags:
+  - go
+  - embeddings
+  - recommendations
+  - similarity
+  - personalization
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

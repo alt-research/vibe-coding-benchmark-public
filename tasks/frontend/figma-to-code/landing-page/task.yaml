@@ -1,0 +1,25 @@
+name: Landing Page from Design
+category: frontend
+subcategory: figma-to-code
+description: Build responsive landing page from design specs with React
+difficulty: medium
+stack: nextjs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  visual: tests/visual.test.ts
+  functional: tests/landing.test.ts
+
+tags:
+  - react
+  - tailwind
+  - responsive
+  - landing-page
+  - typescript
+
+evaluation:
+  functional: 0.2
+  visual: 0.5
+  quality: 0.2
+  speed: 0.1

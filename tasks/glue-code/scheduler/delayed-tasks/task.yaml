@@ -1,0 +1,27 @@
+name: Celery Delayed Task Executor
+category: glue-code
+subcategory: scheduler
+description: Implement delayed task execution with Celery in Python
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_delayed_tasks.py
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - python
+  - celery
+  - delayed-tasks
+  - redis
+  - async
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

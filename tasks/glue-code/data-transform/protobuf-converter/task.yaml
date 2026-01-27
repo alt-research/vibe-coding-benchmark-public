@@ -1,0 +1,24 @@
+name: Protocol Buffer Serialization
+category: glue-code
+subcategory: data-transform
+description: Implement protobuf serialization/deserialization in Rust
+difficulty: hard
+stack: rust
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/protobuf_test.rs
+
+tags:
+  - rust
+  - protobuf
+  - serialization
+  - performance
+  - binary
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

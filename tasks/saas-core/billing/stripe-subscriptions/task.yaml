@@ -1,0 +1,27 @@
+name: Stripe Subscription Management
+category: saas-core
+subcategory: billing
+description: Implement subscription lifecycle management with Stripe
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/subscription.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - typescript
+  - stripe
+  - subscriptions
+  - billing
+  - saas
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

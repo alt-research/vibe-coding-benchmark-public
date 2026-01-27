@@ -1,0 +1,16 @@
+name: Real-time Collaborative Editor
+category: frontend
+subcategory: advanced
+description: Build collaborative editor with CRDT, presence awareness, cursor sync, and offline support
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/collab.test.ts
+tags: [typescript, crdt, yjs, websocket, collaboration]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

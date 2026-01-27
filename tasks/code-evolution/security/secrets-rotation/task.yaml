@@ -1,0 +1,24 @@
+name: Secrets Rotation System
+category: code-evolution
+subcategory: security
+description: Implement secrets rotation in Go
+difficulty: hard
+stack: go
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/secrets_test.go
+
+tags:
+  - go
+  - security
+  - secrets
+  - rotation
+  - vault
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

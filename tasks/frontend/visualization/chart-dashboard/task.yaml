@@ -1,0 +1,28 @@
+name: Analytics Chart Dashboard
+category: frontend
+subcategory: visualization
+description: Build an analytics dashboard with interactive charts and date range filters
+difficulty: medium
+stack: nextjs-supabase
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/dashboard.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - charts
+  - analytics
+  - dashboard
+  - visualization
+  - react
+
+evaluation:
+  functional: 0.4
+  visual: 0.3
+  quality: 0.15
+  cost: 0.1
+  speed: 0.05

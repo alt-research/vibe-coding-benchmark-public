@@ -1,0 +1,16 @@
+name: API Analytics Platform
+category: api-integrations
+subcategory: advanced
+description: Build API analytics with real-time metrics, usage patterns, and anomaly detection
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/analytics_test.go
+tags: [go, analytics, clickhouse, metrics, anomaly]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

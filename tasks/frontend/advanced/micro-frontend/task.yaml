@@ -1,0 +1,16 @@
+name: Micro-Frontend Architecture
+category: frontend
+subcategory: advanced
+description: Build micro-frontend system with module federation, shared state, routing, and independent deployment
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/microfrontend.test.ts
+tags: [typescript, webpack, module-federation, micro-frontend]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

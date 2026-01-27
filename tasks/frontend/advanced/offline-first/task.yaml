@@ -1,0 +1,16 @@
+name: Offline-First Application
+category: frontend
+subcategory: advanced
+description: Build offline-first app with conflict resolution, background sync, and optimistic updates
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/offline.test.ts
+tags: [typescript, pwa, indexeddb, service-worker, sync]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

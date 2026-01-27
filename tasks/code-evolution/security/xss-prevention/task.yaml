@@ -1,0 +1,24 @@
+name: XSS Prevention
+category: code-evolution
+subcategory: security
+description: Add XSS protection to TypeScript app
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/xss.test.ts
+
+tags:
+  - typescript
+  - security
+  - xss
+  - sanitization
+  - owasp
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

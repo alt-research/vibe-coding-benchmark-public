@@ -1,0 +1,27 @@
+name: Distributed Cron Job Manager
+category: glue-code
+subcategory: scheduler
+description: Build distributed cron scheduling system in Go
+difficulty: hard
+stack: go
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/scheduler_test.go
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - go
+  - cron
+  - scheduler
+  - distributed
+  - redis
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

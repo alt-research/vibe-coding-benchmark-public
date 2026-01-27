@@ -1,0 +1,24 @@
+name: Drag-Drop File Uploader
+category: frontend
+subcategory: components
+description: Build file uploader with drag-drop and preview
+difficulty: medium
+stack: nextjs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/uploader.test.tsx
+
+tags:
+  - react
+  - upload
+  - drag-drop
+  - preview
+  - typescript
+
+evaluation:
+  functional: 0.4
+  visual: 0.25
+  quality: 0.2
+  speed: 0.15

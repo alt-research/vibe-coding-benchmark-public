@@ -1,0 +1,16 @@
+name: Multi-Agent Collaboration System
+category: ai-integration
+subcategory: advanced
+description: Build multi-agent system with task delegation, inter-agent communication, conflict resolution, and consensus mechanisms
+difficulty: hard
+stack: python
+timeout: 1500
+tokenLimit: 300000
+tests:
+  functional: tests/test_multiagent.py
+tags: [python, agents, llm, collaboration, orchestration]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

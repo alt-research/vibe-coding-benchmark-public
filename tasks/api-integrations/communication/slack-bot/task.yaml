@@ -1,0 +1,24 @@
+name: Slack Bot with Commands
+category: api-integrations
+subcategory: communication
+description: Build Slack app with slash commands
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/slack.test.ts
+
+tags:
+  - typescript
+  - slack
+  - bot
+  - commands
+  - webhooks
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

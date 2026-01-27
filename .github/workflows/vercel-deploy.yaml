@@ -1,0 +1,487 @@
+name: Deploy App To Vercel
+
+# Unified workflow for both single-repo and monorepo structures
+#
+# Branch naming conventions:
+# - Single repo: release/vercel/{staging|production}
+# - Monorepo: release/vercel/{staging|production}/{subproject_dir}
+#
+# Examples:
+# - Single: release/vercel/staging
+# - Monorepo: release/vercel/staging/8004scan
+#
+# Manual trigger usage:
+# - Go to Actions tab -> Select this workflow -> Click "Run workflow"
+# - For single repo: Leave subproject_dir empty
+# - For monorepo: Enter subproject directory (e.g., 8004scan)
+#
+# Required secrets:
+# - VERCEL_TOKEN: Your Vercel personal access token
+# - VERCEL_ORG_ID: Your Vercel organization ID
+
+env:
+  NODE_VERSION: "22.x"
+  PNPM_VERSION: 9
+
+on:
+  push:
+    branches:
+      - release/vercel/production
+      - release/vercel/staging
+      - release/vercel/*/**  # Monorepo pattern
+  workflow_dispatch:
+    inputs:
+      subproject_dir:
+        description: 'Subproject directory (monorepo only, e.g., 8004scan). Leave empty for single repo'
+        required: false
+        type: string
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+        default: staging
+
+# Ensure only one deploy per environment ref at a time
+concurrency:
+  group: vercel-deploy-${{ github.event.inputs.environment || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Determine environment and project from branch
+    runs-on: ubuntu-latest
+    outputs:
+      subproject_dir: ${{ steps.compute.outputs.subproject_dir }}
+      vercel_environment: ${{ steps.compute.outputs.vercel_environment }}
+      github_environment: ${{ steps.compute.outputs.github_environment }}
+      deploy_prod_flag: ${{ steps.compute.outputs.deploy_prod_flag }}
+      project_name: ${{ steps.compute.outputs.project_name }}
+      env_name: ${{ steps.compute.outputs.env_name }}
+      app_dir: ${{ steps.compute.outputs.app_dir }}
+    steps:
+      - name: Compute environment and subproject
+        id: compute
+        shell: bash
+        run: |
+          # Check if this is a manual workflow dispatch
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            ENV_NAME="${{ github.event.inputs.environment }}"
+            SUBDIR="${{ github.event.inputs.subproject_dir }}"
+            echo "Manual workflow dispatch detected: $ENV_NAME"
+          else
+            # Auto trigger: parse from branch name
+            BRANCH="${GITHUB_REF_NAME:-${GITHUB_REF#refs/heads/}}"
+
+            # Parse: release/vercel/{environment}[/{subproject}]
+            if [[ "$BRANCH" =~ ^release/vercel/([^/]+)(/(.+))?$ ]]; then
+              ENV_NAME="${BASH_REMATCH[1]}"
+              SUBDIR="${BASH_REMATCH[3]}"  # Empty for single repo
+            else
+              echo "Unknown branch: $BRANCH" >&2
+              exit 1
+            fi
+            echo "Auto trigger from branch: $BRANCH"
+          fi
+
+          # Determine app directory
+          if [[ -n "$SUBDIR" ]]; then
+            APP_DIR="$SUBDIR"
+          else
+            APP_DIR="."
+          fi
+
+          # Determine Vercel environment and deployment flag
+          if [[ "$ENV_NAME" == "production" ]]; then
+            VERCEL_ENVIRONMENT="production"
+            GITHUB_ENVIRONMENT="vercel-production"
+            DEPLOY_PROD_FLAG="--prod"
+          else
+            # Use production for staging too (separate Vercel projects)
+            VERCEL_ENVIRONMENT="production"
+            GITHUB_ENVIRONMENT="vercel-staging"
+            DEPLOY_PROD_FLAG="--prod"
+          fi
+
+          # Derive Vercel project name
+          REPO_FULL="${{ github.repository }}"
+          REPO_NAME="${REPO_FULL##*/}"
+
+          if [[ -n "$SUBDIR" ]]; then
+            # Monorepo: <repo>-<subproject>-<environment>
+            SUBDIR_HYPHEN="${SUBDIR//\//-}"
+            PROJECT_NAME="${REPO_NAME}-${SUBDIR_HYPHEN}-${ENV_NAME}"
+          else
+            # Single repo: <repo>-<environment>
+            PROJECT_NAME="${REPO_NAME}-${ENV_NAME}"
+          fi
+
+          echo "subproject_dir=$SUBDIR" >> "$GITHUB_OUTPUT"
+          echo "vercel_environment=$VERCEL_ENVIRONMENT" >> "$GITHUB_OUTPUT"
+          echo "github_environment=$GITHUB_ENVIRONMENT" >> "$GITHUB_OUTPUT"
+          echo "deploy_prod_flag=$DEPLOY_PROD_FLAG" >> "$GITHUB_OUTPUT"
+          echo "project_name=$PROJECT_NAME" >> "$GITHUB_OUTPUT"
+          echo "env_name=$ENV_NAME" >> "$GITHUB_OUTPUT"
+          echo "app_dir=$APP_DIR" >> "$GITHUB_OUTPUT"
+
+          echo "Environment: $ENV_NAME"
+          echo "Project Name: $PROJECT_NAME"
+          echo "App Directory: $APP_DIR"
+
+  build-and-deploy:
+    name: Build and Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: prepare
+    timeout-minutes: 30
+    environment: ${{ needs.prepare.outputs.github_environment }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      GH_VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+
+    steps:
+      - name: Validate required secrets
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "Error: VERCEL_TOKEN secret is not set" >&2
+            exit 1
+          fi
+          if [ -z "${{ secrets.VERCEL_ORG_ID }}" ]; then
+            echo "Error: VERCEL_ORG_ID secret is not set" >&2
+            exit 1
+          fi
+          echo "All required secrets are present"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Create deployment commit
+        env:
+          DEPLOY_AUTHOR_EMAIL: ${{ secrets.VERCEL_DEPLOY_AUTHOR_EMAIL || 'deploy@vibecodingbench.dev' }}
+          DEPLOY_AUTHOR_NAME: ${{ secrets.VERCEL_DEPLOY_AUTHOR_NAME || 'VibeCodingBench Deploy Bot' }}
+        run: |
+          git config user.name "$DEPLOY_AUTHOR_NAME"
+          git config user.email "$DEPLOY_AUTHOR_EMAIL"
+          git commit --allow-empty -m "deploy: trigger Vercel deployment for ${{ needs.prepare.outputs.env_name }}"
+          echo "Created deployment commit with author: $DEPLOY_AUTHOR_EMAIL"
+          git log --format="%H %ae %s" -1
+
+      - name: Detect package manager and monorepo structure
+        id: detect_structure
+        run: |
+          APP_DIR="${{ needs.prepare.outputs.app_dir }}"
+
+          # Check for pnpm
+          if [ -f "$APP_DIR/pnpm-lock.yaml" ] || [ -f "pnpm-lock.yaml" ]; then
+            echo "package_manager=pnpm" >> "$GITHUB_OUTPUT"
+            echo "Detected pnpm"
+          elif [ -f "$APP_DIR/package-lock.json" ] || [ -f "package-lock.json" ]; then
+            echo "package_manager=npm" >> "$GITHUB_OUTPUT"
+            echo "Detected npm"
+          else
+            echo "package_manager=npm" >> "$GITHUB_OUTPUT"
+            echo "Defaulting to npm"
+          fi
+
+          # Detect monorepo workspace root
+          if [ -f "pnpm-workspace.yaml" ]; then
+            echo "install_dir=." >> "$GITHUB_OUTPUT"
+            echo "is_monorepo=true" >> "$GITHUB_OUTPUT"
+            echo "Detected monorepo root"
+          elif [ "$APP_DIR" != "." ] && [ -f "$APP_DIR/../pnpm-workspace.yaml" ]; then
+            PARENT_DIR=$(dirname "$APP_DIR")
+            echo "install_dir=$PARENT_DIR" >> "$GITHUB_OUTPUT"
+            echo "is_monorepo=true" >> "$GITHUB_OUTPUT"
+            echo "Detected workspace in parent: $PARENT_DIR"
+          else
+            echo "install_dir=$APP_DIR" >> "$GITHUB_OUTPUT"
+            echo "is_monorepo=false" >> "$GITHUB_OUTPUT"
+            echo "Standalone project"
+          fi
+
+      - name: Install pnpm
+        if: steps.detect_structure.outputs.package_manager == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: ${{ steps.detect_structure.outputs.package_manager }}
+          cache-dependency-path: |
+            ${{ steps.detect_structure.outputs.package_manager == 'pnpm' && '**/pnpm-lock.yaml' || '**/package-lock.json' }}
+
+      - name: Get pnpm store directory
+        if: steps.detect_structure.outputs.package_manager == 'pnpm'
+        id: pnpm_store
+        shell: bash
+        run: |
+          STORE_PATH=$(pnpm store path --silent)
+          echo "STORE_PATH=$STORE_PATH" >> $GITHUB_ENV
+          echo "path=$STORE_PATH" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        if: steps.detect_structure.outputs.package_manager == 'pnpm'
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm_store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Cache Next.js and build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ needs.prepare.outputs.app_dir }}/.next/cache
+            ${{ needs.prepare.outputs.app_dir }}/.turbo
+            ${{ needs.prepare.outputs.app_dir }}/node_modules/.cache
+          key: ${{ runner.os }}-nextjs-${{ needs.prepare.outputs.project_name }}-${{ hashFiles('**/pnpm-lock.yaml', '**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ needs.prepare.outputs.project_name }}-${{ hashFiles('**/pnpm-lock.yaml', '**/package-lock.json') }}-
+            ${{ runner.os }}-nextjs-${{ needs.prepare.outputs.project_name }}-
+            ${{ runner.os }}-nextjs-
+
+      - name: Install dependencies
+        run: |
+          INSTALL_DIR="${{ steps.detect_structure.outputs.install_dir }}"
+          PKG_MGR="${{ steps.detect_structure.outputs.package_manager }}"
+
+          echo "::group::📦 Installing dependencies"
+          echo "Install directory: $INSTALL_DIR"
+          echo "Package manager: $PKG_MGR"
+          echo "Is monorepo: ${{ steps.detect_structure.outputs.is_monorepo }}"
+
+          cd "$INSTALL_DIR"
+
+          if [[ "$PKG_MGR" == "pnpm" ]]; then
+            if [ -f "pnpm-lock.yaml" ]; then
+              echo "Running: pnpm install --frozen-lockfile"
+              pnpm install --frozen-lockfile
+            else
+              echo "⚠️ Warning: pnpm-lock.yaml not found"
+              pnpm install --no-frozen-lockfile
+            fi
+          else
+            if [ -f "package-lock.json" ]; then
+              echo "Running: npm ci"
+              npm ci
+            else
+              echo "⚠️ Warning: package-lock.json not found"
+              npm install
+            fi
+          fi
+
+          echo "✅ Dependencies installed successfully"
+          echo "::endgroup::"
+        timeout-minutes: 10
+
+      - name: Setup Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Link Vercel project
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -e
+          mkdir -p .vercel
+
+          if vercel link --yes --token "$VERCEL_TOKEN" --scope "$GH_VERCEL_ORG_ID" --project "${{ needs.prepare.outputs.project_name }}"; then
+            echo "Successfully linked to Vercel project"
+          else
+            LINK_EXIT_CODE=$?
+            echo "Warning: vercel link command exited with code $LINK_EXIT_CODE"
+
+            if [ ! -f .vercel/project.json ]; then
+              echo "Error: No .vercel/project.json found after link attempt" >&2
+              exit 1
+            fi
+          fi
+
+          if [ -f .vercel/project.json ]; then
+            echo "Linked Vercel project:"
+            cat .vercel/project.json
+          fi
+        working-directory: ${{ needs.prepare.outputs.app_dir }}
+        timeout-minutes: 5
+
+      - name: Pull Vercel environment variables
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel env pull .env.production \
+            --environment ${{ needs.prepare.outputs.vercel_environment }} \
+            --token "$VERCEL_TOKEN"
+          echo "Environment variables pulled successfully"
+        working-directory: ${{ needs.prepare.outputs.app_dir }}
+        timeout-minutes: 5
+
+      - name: Lint
+        run: |
+          echo "::group::🔍 Running linter"
+          PKG_MGR="${{ steps.detect_structure.outputs.package_manager }}"
+          if [[ "$PKG_MGR" == "pnpm" ]]; then
+            echo "Running: pnpm run lint"
+            pnpm run lint && echo "✅ Lint passed" || echo "⚠️ Lint failed (continuing anyway)"
+          else
+            echo "Running: npm run lint"
+            npm run lint && echo "✅ Lint passed" || echo "⚠️ Lint failed (continuing anyway)"
+          fi
+          echo "::endgroup::"
+        working-directory: ${{ needs.prepare.outputs.app_dir }}
+        timeout-minutes: 5
+        continue-on-error: true
+
+      - name: Build application
+        id: build
+        run: |
+          echo "::group::🏗️ Building application"
+          echo "Starting build at: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+
+          BUILD_START=$(date +%s)
+          PKG_MGR="${{ steps.detect_structure.outputs.package_manager }}"
+
+          if [[ "$PKG_MGR" == "pnpm" ]]; then
+            echo "Running: pnpm run build"
+            pnpm run build
+          else
+            echo "Running: npm run build"
+            npm run build
+          fi
+
+          BUILD_END=$(date +%s)
+          BUILD_DURATION=$((BUILD_END - BUILD_START))
+
+          echo "build_duration=${BUILD_DURATION}s" >> "$GITHUB_OUTPUT"
+          echo "✅ Build completed in ${BUILD_DURATION}s"
+          echo "::endgroup::"
+        working-directory: ${{ needs.prepare.outputs.app_dir }}
+        timeout-minutes: 15
+        env:
+          NODE_ENV: production
+
+      - name: Deploy to Vercel
+        id: deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          echo "::group::🚀 Deploying to Vercel"
+          echo "Deploying to project: ${{ needs.prepare.outputs.project_name }}"
+          echo "Environment: ${{ needs.prepare.outputs.env_name }}"
+          echo "Mode: ${{ needs.prepare.outputs.deploy_prod_flag }}"
+          echo "Starting deployment at: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+
+          DEPLOY_START=$(date +%s)
+
+          set +e
+          DEPLOY_OUTPUT=$(vercel deploy ${{ needs.prepare.outputs.deploy_prod_flag }} --yes --token "$VERCEL_TOKEN" --scope "$GH_VERCEL_ORG_ID" 2>&1)
+          DEPLOY_EXIT_CODE=$?
+          set -e
+
+          DEPLOY_END=$(date +%s)
+          DEPLOY_DURATION=$((DEPLOY_END - DEPLOY_START))
+
+          echo "deploy_duration=${DEPLOY_DURATION}s" >> "$GITHUB_OUTPUT"
+          echo ""
+          echo "Deploy exit code: $DEPLOY_EXIT_CODE"
+          echo "Deploy output:"
+          echo "$DEPLOY_OUTPUT"
+
+          if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
+            echo "::endgroup::"
+            echo "::error::Vercel deployment failed with exit code $DEPLOY_EXIT_CODE"
+            exit $DEPLOY_EXIT_CODE
+          fi
+
+          # Extract deployment URL
+          DEPLOYMENT_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE 'https://[^[:space:]]+\.vercel\.app' | head -1)
+          if [ -n "$DEPLOYMENT_URL" ]; then
+            echo "deployment_url=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
+            echo ""
+            echo "✅ Deployment successful!"
+            echo "📍 Deployment URL: $DEPLOYMENT_URL"
+            echo "⏱️  Deploy duration: ${DEPLOY_DURATION}s"
+          else
+            echo "⚠️ Warning: Could not extract deployment URL from output"
+          fi
+          echo "::endgroup::"
+        working-directory: ${{ needs.prepare.outputs.app_dir }}
+        timeout-minutes: 10
+
+      - name: Write Deployment Summary
+        if: always()
+        shell: bash
+        run: |
+          cd "${{ needs.prepare.outputs.app_dir }}"
+          PROJECT_ID=$(node -p "require('./.vercel/project.json').projectId" 2>/dev/null || echo "unknown")
+          if [ -n "${{ needs.prepare.outputs.deploy_prod_flag }}" ]; then MODE="production"; else MODE="preview"; fi
+          BRANCH="${GITHUB_REF_NAME:-${GITHUB_REF#refs/heads/}}"
+          DEPLOYMENT_URL="${{ steps.deploy.outputs.deployment_url }}"
+          BUILD_DURATION="${{ steps.build.outputs.build_duration }}"
+          DEPLOY_DURATION="${{ steps.deploy.outputs.deploy_duration }}"
+
+          # Determine status emoji
+          if [[ "${{ job.status }}" == "success" ]]; then
+            STATUS_EMOJI="✅"
+          elif [[ "${{ job.status }}" == "failure" ]]; then
+            STATUS_EMOJI="❌"
+          else
+            STATUS_EMOJI="⚠️"
+          fi
+
+          {
+            echo "## ${STATUS_EMOJI} Vercel Deployment Summary";
+            echo "";
+            echo "### Deployment Information";
+            if [ -n "$DEPLOYMENT_URL" ]; then
+              echo "- **Deployment URL**: [$DEPLOYMENT_URL]($DEPLOYMENT_URL)";
+            else
+              echo "- **Deployment URL**: Not available";
+            fi
+            echo "- **Deployment Status**: ${{ job.status }}";
+            echo "- **Triggered by**: \`${{ github.event_name }}\` by @${{ github.actor }}";
+            echo "- **Commit**: [\`${GITHUB_SHA:0:7}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})";
+            echo "";
+            echo "### Configuration";
+            echo "- **Branch**: \`$BRANCH\`";
+            echo "- **App Directory**: \`${{ needs.prepare.outputs.app_dir }}\`";
+            if [ -n "${{ needs.prepare.outputs.subproject_dir }}" ]; then
+              echo "- **Subproject**: \`${{ needs.prepare.outputs.subproject_dir }}\`";
+            fi
+            echo "- **Project Name**: \`${{ needs.prepare.outputs.project_name }}\`";
+            echo "- **Vercel Project ID**: \`${PROJECT_ID}\`";
+            echo "";
+            echo "### Environment";
+            echo "- **GitHub Environment**: \`${{ needs.prepare.outputs.github_environment }}\`";
+            echo "- **Vercel Environment**: \`${{ needs.prepare.outputs.vercel_environment }}\`";
+            echo "- **Deployment Mode**: \`$MODE\`";
+            echo "";
+            echo "### Build Performance";
+            echo "- **Node Version**: \`${{ env.NODE_VERSION }}\`";
+            echo "- **Package Manager**: \`${{ steps.detect_structure.outputs.package_manager }}\`";
+            echo "- **Is Monorepo**: \`${{ steps.detect_structure.outputs.is_monorepo }}\`";
+            if [ -n "$BUILD_DURATION" ]; then
+              echo "- **Build Duration**: ⏱️ \`$BUILD_DURATION\`";
+            fi
+            if [ -n "$DEPLOY_DURATION" ]; then
+              echo "- **Deploy Duration**: ⏱️ \`$DEPLOY_DURATION\`";
+            fi
+            if [ -n "$BUILD_DURATION" ] && [ -n "$DEPLOY_DURATION" ]; then
+              BUILD_SECS=$(echo "$BUILD_DURATION" | sed 's/s$//')
+              DEPLOY_SECS=$(echo "$DEPLOY_DURATION" | sed 's/s$//')
+              TOTAL_SECS=$((BUILD_SECS + DEPLOY_SECS))
+              echo "- **Total Duration**: ⏱️ \`${TOTAL_SECS}s\`";
+            fi
+            echo "";
+            echo "### Links";
+            echo "- **Workflow Run**: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})";
+            if [ "$PROJECT_ID" != "unknown" ]; then
+              echo "- **Vercel Dashboard**: [View Project](https://vercel.com/${{ secrets.VERCEL_ORG_ID }}/$PROJECT_ID)";
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

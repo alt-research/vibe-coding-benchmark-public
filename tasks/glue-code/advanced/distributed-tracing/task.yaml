@@ -1,0 +1,16 @@
+name: Distributed Tracing System
+category: glue-code
+subcategory: advanced
+description: Build distributed tracing with context propagation, sampling strategies, and trace aggregation
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/tracing_test.go
+tags: [go, opentelemetry, jaeger, tracing, observability]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

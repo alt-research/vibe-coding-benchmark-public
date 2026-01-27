@@ -1,0 +1,24 @@
+name: High-Performance Image Resizer
+category: glue-code
+subcategory: file-processing
+description: Build high-performance image processing service in Rust
+difficulty: hard
+stack: rust
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/image_test.rs
+
+tags:
+  - rust
+  - image-processing
+  - performance
+  - thumbnails
+  - webp
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

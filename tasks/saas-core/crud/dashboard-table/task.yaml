@@ -1,0 +1,28 @@
+name: Data Table Dashboard
+category: saas-core
+subcategory: crud
+description: Build a sortable, filterable data table with pagination, search, and bulk actions
+difficulty: medium
+stack: nextjs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/table.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - crud
+  - datatable
+  - pagination
+  - filtering
+  - sorting
+
+evaluation:
+  functional: 0.4
+  visual: 0.2
+  quality: 0.2
+  cost: 0.1
+  speed: 0.1

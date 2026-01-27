@@ -1,0 +1,16 @@
+name: Advanced Service Worker
+category: frontend
+subcategory: advanced
+description: Build service worker with smart caching strategies, push notifications, and background processing
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/sw.test.ts
+tags: [typescript, service-worker, pwa, caching, push]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

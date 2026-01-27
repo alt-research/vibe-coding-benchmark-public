@@ -1,0 +1,16 @@
+name: WebAssembly Integration
+category: frontend
+subcategory: advanced
+description: Build WASM integration layer with streaming compilation, memory management, and JS interop
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/wasm.test.ts
+tags: [typescript, webassembly, rust, performance, interop]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

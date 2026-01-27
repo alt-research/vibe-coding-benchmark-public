@@ -1,0 +1,27 @@
+name: Redis Caching Layer
+category: glue-code
+subcategory: caching
+description: Implement a caching layer with Redis for API responses and database queries
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/cache.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - redis
+  - caching
+  - performance
+  - api
+  - database
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

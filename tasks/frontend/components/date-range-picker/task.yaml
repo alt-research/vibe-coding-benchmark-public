@@ -1,0 +1,24 @@
+name: Date Range Picker
+category: frontend
+subcategory: components
+description: Build date range picker with Svelte
+difficulty: medium
+stack: svelte
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/datepicker.test.ts
+
+tags:
+  - svelte
+  - date-picker
+  - calendar
+  - range
+  - typescript
+
+evaluation:
+  functional: 0.4
+  visual: 0.25
+  quality: 0.2
+  speed: 0.15

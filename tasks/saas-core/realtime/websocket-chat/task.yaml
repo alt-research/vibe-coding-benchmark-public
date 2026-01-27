@@ -1,0 +1,27 @@
+name: Real-time WebSocket Chat
+category: saas-core
+subcategory: realtime
+description: Build a real-time chat system using WebSocket with presence and typing indicators
+difficulty: hard
+stack: nodejs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/websocket.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - websocket
+  - realtime
+  - chat
+  - presence
+  - nodejs
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

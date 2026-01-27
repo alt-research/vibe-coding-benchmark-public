@@ -1,0 +1,24 @@
+name: Cloudinary Image Management
+category: api-integrations
+subcategory: storage
+description: Integrate Cloudinary for image uploads and transforms
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/cloudinary.test.ts
+
+tags:
+  - typescript
+  - cloudinary
+  - images
+  - transforms
+  - cdn
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

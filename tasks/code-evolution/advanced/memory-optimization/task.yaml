@@ -1,0 +1,16 @@
+name: Memory Leak Detection and Fix
+category: code-evolution
+subcategory: advanced
+description: Build memory analysis tool with leak detection, heap analysis, and automated fix suggestions
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/memory.test.ts
+tags: [typescript, memory, profiling, heap, optimization]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

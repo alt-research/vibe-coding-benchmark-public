@@ -1,0 +1,16 @@
+name: gRPC-HTTP Gateway
+category: api-integrations
+subcategory: advanced
+description: Build gRPC gateway with REST transcoding, streaming support, and automatic OpenAPI generation
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/grpc_test.go
+tags: [go, grpc, rest, protobuf, gateway]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

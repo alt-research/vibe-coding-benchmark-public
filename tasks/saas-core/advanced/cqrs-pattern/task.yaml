@@ -1,0 +1,16 @@
+name: CQRS with Eventual Consistency
+category: saas-core
+subcategory: advanced
+description: Implement CQRS pattern with separate read/write models, eventual consistency, and materialized views
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/cqrs_test.go
+tags: [go, cqrs, postgresql, elasticsearch, kafka]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

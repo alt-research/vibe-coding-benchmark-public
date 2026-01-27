@@ -1,0 +1,24 @@
+name: Legal Contract Analyzer
+category: ai-integration
+subcategory: structured-output
+description: Analyze legal documents and extract key terms with Python
+difficulty: hard
+stack: python
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/test_contract.py
+
+tags:
+  - python
+  - llm
+  - legal
+  - contracts
+  - analysis
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,24 @@
+name: Mapbox Route Directions
+category: api-integrations
+subcategory: maps
+description: Calculate routes with Mapbox Directions API
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_directions.py
+
+tags:
+  - python
+  - mapbox
+  - directions
+  - routing
+  - navigation
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

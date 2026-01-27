@@ -1,0 +1,27 @@
+name: REST to GraphQL Adapter
+category: glue-code
+subcategory: api-sync
+description: Build an adapter that wraps a REST API and exposes it as a GraphQL endpoint
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/graphql.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - graphql
+  - rest
+  - api
+  - adapter
+  - schema
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

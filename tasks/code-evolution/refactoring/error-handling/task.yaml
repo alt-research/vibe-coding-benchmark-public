@@ -1,0 +1,24 @@
+name: Standardize Error Handling
+category: code-evolution
+subcategory: refactoring
+description: Standardize error handling patterns in Go
+difficulty: medium
+stack: go
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/errors_test.go
+
+tags:
+  - go
+  - errors
+  - refactoring
+  - patterns
+  - handling
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

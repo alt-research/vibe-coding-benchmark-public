@@ -1,0 +1,16 @@
+name: Log Aggregation Pipeline
+category: glue-code
+subcategory: advanced
+description: Build log aggregation with structured logging, parsing, enrichment, and anomaly detection
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/logging_test.go
+tags: [go, elasticsearch, fluentd, logging, anomaly]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

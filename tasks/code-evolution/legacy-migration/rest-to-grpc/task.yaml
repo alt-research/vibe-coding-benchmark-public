@@ -1,0 +1,24 @@
+name: REST to gRPC Migration
+category: code-evolution
+subcategory: legacy-migration
+description: Migrate REST API to gRPC in Go
+difficulty: hard
+stack: go
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/grpc_test.go
+
+tags:
+  - go
+  - grpc
+  - rest
+  - protobuf
+  - migration
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

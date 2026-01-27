@@ -1,0 +1,478 @@
+name: Create Vercel Deployment Pull Requests
+
+# Unified workflow for both single-repo and monorepo structures
+#
+# Branch naming conventions:
+# - Single repo: release/vercel/{staging|production}
+# - Monorepo: release/vercel/{staging|production}/{subproject_dir}
+#
+# Examples:
+# - Single: release/vercel/staging, release/vercel/production
+# - Monorepo: release/vercel/staging/8004scan, release/vercel/production/8004scan
+#
+# The workflow will:
+# 1. Detect all existing Vercel deployment branches
+# 2. Check if PRs already exist for each branch
+# 3. Create new PRs only if they don't exist
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      subproject_dir:
+        description: "Specific subproject (monorepo only, e.g., 8004scan). Leave empty for all/single repo"
+        required: false
+        type: string
+      environment:
+        description: "Target environment (leave empty for both)"
+        required: false
+        type: choice
+        options:
+          - ''
+          - staging
+          - production
+        default: ''
+
+# Cancel older runs for the same branch/event to avoid duplicates
+concurrency:
+  group: vercel-auto-pr-${{ github.event.inputs.environment || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect-and-create-prs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Fetch all remote branches
+        run: git fetch --all
+
+      - name: Detect Vercel deployment branches
+        id: detect_branches
+        run: |
+          # Get all remote branches matching Vercel deployment pattern
+          # Matches both:
+          # - release/vercel/staging (single repo)
+          # - release/vercel/staging/8004scan (monorepo)
+          all_branches=$(git branch -r | grep -E 'origin/release/vercel/(staging|production)' | sed 's|origin/||' | tr -d ' ')
+
+          # Apply filters if manual trigger
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            subproject_filter="${{ github.event.inputs.subproject_dir }}"
+            env_filter="${{ github.event.inputs.environment }}"
+
+            filtered_branches=""
+            for branch in $all_branches; do
+              # Extract environment and optional subproject
+              if [[ "$branch" =~ ^release/vercel/([^/]+)(/(.+))?$ ]]; then
+                env="${BASH_REMATCH[1]}"
+                subdir="${BASH_REMATCH[3]}"  # Empty for single repo
+
+                # Apply filters
+                skip=false
+                if [[ -n "$subproject_filter" && "$subdir" != "$subproject_filter" ]]; then
+                  skip=true
+                fi
+                if [[ -n "$env_filter" && "$env" != "$env_filter" ]]; then
+                  skip=true
+                fi
+
+                if [[ "$skip" == "false" ]]; then
+                  filtered_branches="$filtered_branches $branch"
+                fi
+              fi
+            done
+            all_branches="$filtered_branches"
+          fi
+
+          # Convert to JSON array
+          branches_json=$(echo "$all_branches" | tr ' ' '\n' | grep -v '^$' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+          echo "branches=$branches_json" >> "$GITHUB_OUTPUT"
+          echo "Found branches:"
+          echo "$branches_json" | jq -r '.[]'
+
+      - name: Check if branches were found
+        id: check_branches
+        env:
+          BRANCHES_JSON: ${{ steps.detect_branches.outputs.branches }}
+        run: |
+          # Validate JSON before parsing to prevent jq errors
+          if [[ -n "$BRANCHES_JSON" ]] && echo "$BRANCHES_JSON" | jq -e '.' > /dev/null 2>&1; then
+            count=$(echo "$BRANCHES_JSON" | jq 'length')
+          else
+            count=0
+          fi
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+          if [[ "$count" -eq 0 ]]; then
+            echo "⚠️ No Vercel deployment branches found"
+          fi
+
+      - name: Create release branches if not exist
+        id: create_branches
+        if: steps.check_branches.outputs.count == '0'
+        run: |
+          echo "No Vercel deployment branches found. Creating default branches..."
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Create staging branch from master
+          git checkout -b release/vercel/staging
+          git push origin release/vercel/staging
+          echo "✅ Created release/vercel/staging"
+
+          # Create production branch from master
+          git checkout master
+          git checkout -b release/vercel/production
+          git push origin release/vercel/production
+          echo "✅ Created release/vercel/production"
+
+          git checkout master
+
+          # Output the newly created branches
+          echo 'branches=["release/vercel/staging","release/vercel/production"]' >> "$GITHUB_OUTPUT"
+          echo "created=true" >> "$GITHUB_OUTPUT"
+
+      - name: Set final branches output
+        id: final_branches
+        env:
+          CREATED_BRANCHES: ${{ steps.create_branches.outputs.branches }}
+          DETECTED_BRANCHES: ${{ steps.detect_branches.outputs.branches }}
+          WAS_CREATED: ${{ steps.create_branches.outputs.created }}
+          BRANCH_COUNT: ${{ steps.check_branches.outputs.count }}
+        run: |
+          if [[ "$WAS_CREATED" == "true" ]]; then
+            # Use heredoc to preserve JSON
+            echo "branches<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$CREATED_BRANCHES" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "has_branches=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "branches<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$DETECTED_BRANCHES" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            if [[ "$BRANCH_COUNT" -gt 0 ]]; then
+              echo "has_branches=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "has_branches=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+    outputs:
+      branches: ${{ steps.final_branches.outputs.branches }}
+      has_branches: ${{ steps.final_branches.outputs.has_branches }}
+
+  create-pr:
+    needs: detect-and-create-prs
+    if: needs.detect-and-create-prs.outputs.has_branches == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      matrix:
+        branch: ${{ fromJson(needs.detect-and-create-prs.outputs.branches) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Parse branch information
+        id: parse
+        run: |
+          branch="${{ matrix.branch }}"
+          REPO_FULL="${{ github.repository }}"
+          REPO_NAME="${REPO_FULL##*/}"
+
+          # Parse branch: release/vercel/{environment}[/{subproject}]
+          if [[ "$branch" =~ ^release/vercel/([^/]+)(/(.+))?$ ]]; then
+            environment="${BASH_REMATCH[1]}"
+            subproject="${BASH_REMATCH[3]}"  # Empty for single repo
+          else
+            echo "Error: Unknown branch pattern: $branch" >&2
+            exit 1
+          fi
+
+          # Determine if this is monorepo or single repo
+          if [[ -n "$subproject" ]]; then
+            # Monorepo
+            project_name="$subproject"
+            app_dir="$subproject"
+          else
+            # Single repo - use repo name
+            project_name="$REPO_NAME"
+            app_dir="."
+          fi
+
+          # Create PR title
+          if [[ "$environment" == "production" ]]; then
+            title="🚀 Deploy ${project_name} to Production"
+            emoji="🚀"
+          else
+            title="🔄 Deploy ${project_name} to Staging"
+            emoji="🔄"
+          fi
+
+          echo "environment=$environment" >> "$GITHUB_OUTPUT"
+          echo "subproject=$subproject" >> "$GITHUB_OUTPUT"
+          echo "project_name=$project_name" >> "$GITHUB_OUTPUT"
+          echo "app_dir=$app_dir" >> "$GITHUB_OUTPUT"
+          echo "title=$title" >> "$GITHUB_OUTPUT"
+          echo "emoji=$emoji" >> "$GITHUB_OUTPUT"
+
+      - name: Check for potential conflicts
+        id: check_conflicts
+        run: |
+          base_branch="${{ matrix.branch }}"
+
+          # Fetch latest
+          git fetch origin "$base_branch"
+          git fetch origin master
+
+          # Check if release branch has commits not in master (diverged)
+          diverged_commits=$(git rev-list --count origin/master..origin/"$base_branch")
+
+          if [[ $diverged_commits -gt 0 ]]; then
+            echo "has_diverged=true" >> "$GITHUB_OUTPUT"
+            echo "diverged_commits=$diverged_commits" >> "$GITHUB_OUTPUT"
+            echo "⚠️ WARNING: Release branch has $diverged_commits commits not in master"
+            echo "This usually indicates someone committed directly to the release branch."
+
+            # Check if merge would conflict
+            git checkout -b temp-merge-test origin/"$base_branch"
+            merge_output=$(git merge --no-commit --no-ff origin/master 2>&1)
+            if echo "$merge_output" | grep -q "CONFLICT"; then
+              echo "has_conflicts=true" >> "$GITHUB_OUTPUT"
+              echo "❌ Merge conflicts detected"
+            else
+              echo "has_conflicts=false" >> "$GITHUB_OUTPUT"
+              echo "✅ No merge conflicts detected (but branch has diverged)"
+            fi
+            git merge --abort 2>/dev/null || true
+            git checkout main
+            git branch -D temp-merge-test 2>/dev/null || true
+          else
+            echo "has_diverged=false" >> "$GITHUB_OUTPUT"
+            echo "has_conflicts=false" >> "$GITHUB_OUTPUT"
+            echo "✅ Release branch has not diverged from master"
+          fi
+
+      - name: Check for existing PR
+        id: check_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          base_branch="${{ matrix.branch }}"
+          head_branch="master"
+
+          # Check if PR already exists
+          existing_pr=$(gh pr list \
+            --base "$base_branch" \
+            --head "$head_branch" \
+            --state open \
+            --json number,url,mergeable \
+            --jq '.[0]')
+
+          if [[ -n "$existing_pr" ]]; then
+            pr_number=$(echo "$existing_pr" | jq -r '.number')
+            pr_url=$(echo "$existing_pr" | jq -r '.url')
+            mergeable=$(echo "$existing_pr" | jq -r '.mergeable')
+            if [[ "$mergeable" == "null" ]]; then mergeable="UNKNOWN"; fi
+
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+            echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+            echo "mergeable=$mergeable" >> "$GITHUB_OUTPUT"
+            echo "✅ PR already exists: #$pr_number ($pr_url)"
+            echo "   Mergeable status: $mergeable"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "📝 No existing PR found"
+          fi
+
+      - name: Create pull request
+        if: steps.check_pr.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          base_branch="${{ matrix.branch }}"
+          head_branch="master"
+          title="${{ steps.parse.outputs.title }}"
+          environment="${{ steps.parse.outputs.environment }}"
+          project_name="${{ steps.parse.outputs.project_name }}"
+          app_dir="${{ steps.parse.outputs.app_dir }}"
+          subproject="${{ steps.parse.outputs.subproject }}"
+          emoji="${{ steps.parse.outputs.emoji }}"
+
+          # Create PR body
+          body=$(cat <<EOF
+          $emoji **Auto-generated deployment PR**
+
+          This PR will trigger deployment of **${project_name}** to **$environment** environment via Vercel.
+
+          ## How to Deploy
+
+          **Option 1: Use /deploy command (Recommended)**
+          - Comment \`/deploy\` on this PR to automatically sync and trigger deployment
+          - The workflow will handle conflicts automatically
+          - PR will close automatically once deployment is approved
+
+          **Option 2: Manual merge**
+          - Click "Merge pull request" to approve deployment manually
+
+          ## Deployment Details
+
+          - **Project**: \`$project_name\`
+          - **App Directory**: \`$app_dir\`
+          $(if [[ -n "$subproject" ]]; then echo "- **Subproject**: \`$subproject\`"; fi)
+          - **Environment**: \`$environment\`
+          - **Base Branch**: \`$base_branch\`
+          - **Source Branch**: \`$head_branch\`
+          - **Triggered by**: ${{ github.event_name == 'workflow_dispatch' && 'Manual trigger' || 'Push to master' }}
+
+          ## What happens next?
+
+          1. Review the changes in this PR
+          2. **Use "Rebase and merge"** to merge this PR
+          3. The deployment will automatically start via the \`Deploy App To Vercel\` workflow
+
+          ## Deployment Workflow
+
+          The deployment will be handled by: [Deploy App To Vercel](${{ github.server_url }}/${{ github.repository }}/actions/workflows/vercel-deploy.yml)
+
+          ---
+
+          *This PR was automatically created by the [Auto PR workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
+          EOF
+          )
+
+          # Create the PR
+          pr_url=$(gh pr create \
+            --base "$base_branch" \
+            --head "$head_branch" \
+            --title "$title" \
+            --body "$body")
+
+          echo "✨ Created new PR: $pr_url"
+
+      - name: Summary
+        if: always()
+        run: |
+          branch="${{ matrix.branch }}"
+          title="${{ steps.parse.outputs.title }}"
+          exists="${{ steps.check_pr.outputs.exists }}"
+          has_diverged="${{ steps.check_conflicts.outputs.has_diverged }}"
+          has_conflicts="${{ steps.check_conflicts.outputs.has_conflicts }}"
+          diverged_commits="${{ steps.check_conflicts.outputs.diverged_commits }}"
+          mergeable="${{ steps.check_pr.outputs.mergeable }}"
+
+          {
+            echo "### $title"
+            echo ""
+
+            # Conflict warning
+            if [[ "$has_diverged" == "true" ]]; then
+              echo "⚠️ **WARNING: Branch has diverged from master**"
+              echo ""
+              echo "- Release branch has $diverged_commits commits not in master"
+              echo "- This usually means someone committed directly to \`$branch\`"
+              echo ""
+
+              if [[ "$has_conflicts" == "true" ]]; then
+                echo "❌ **Merge conflicts detected** - manual resolution required"
+                echo ""
+                echo "**To fix:**"
+                echo '```bash'
+                echo "# Option 1: Reset to master (DESTRUCTIVE - loses diverged commits)"
+                echo "git checkout $branch"
+                echo "git reset --hard origin/master"
+                echo "git push origin $branch --force"
+                echo ""
+                echo "# Option 2: Cherry-pick important commits to master first"
+                echo "git checkout main"
+                echo "git cherry-pick <commit-hash>"
+                echo "# Then reset release branch as above"
+                echo '```'
+              else
+                echo "ℹ️ No conflicts, but you should investigate why branch diverged"
+              fi
+              echo ""
+            fi
+
+            # PR status
+            if [[ "$exists" == "true" ]]; then
+              pr_url="${{ steps.check_pr.outputs.pr_url }}"
+              pr_number="${{ steps.check_pr.outputs.pr_number }}"
+              echo "📋 **PR**: [#$pr_number]($pr_url)"
+
+              if [[ "$mergeable" == "CONFLICTING" ]]; then
+                echo "⚠️ **Status**: Has conflicts - see warning above"
+              elif [[ "$mergeable" == "MERGEABLE" ]]; then
+                echo "✅ **Status**: Ready to merge"
+              else
+                echo "ℹ️ **Status**: $mergeable"
+              fi
+            else
+              echo "✨ **New PR created**"
+            fi
+          } >> $GITHUB_STEP_SUMMARY
+
+  summary:
+    needs: [detect-and-create-prs, create-pr]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Overall Summary
+        run: |
+          {
+            echo "## 📋 Vercel Deployment PR Summary"
+            echo ""
+            echo "### Workflow Information"
+            echo "- **Trigger**: ${{ github.event_name == 'workflow_dispatch' && 'Manual' || 'Auto (push to master)' }}"
+            echo "- **Run**: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo ""
+
+            if [[ "${{ needs.detect-and-create-prs.outputs.has_branches }}" == "false" ]]; then
+              echo "⚠️ **No Vercel deployment branches found**"
+              echo ""
+              echo "To set up deployment branches, create branches:"
+              echo '```'
+              echo "# Single repo:"
+              echo "release/vercel/staging"
+              echo "release/vercel/production"
+              echo ""
+              echo "# Monorepo:"
+              echo "release/vercel/staging/{subproject}"
+              echo "release/vercel/production/{subproject}"
+              echo '```'
+            else
+              echo "### Processed Branches"
+              echo ""
+              branches='${{ needs.detect-and-create-prs.outputs.branches }}'
+              # Validate JSON before parsing to prevent jq errors
+              if [[ -n "$branches" ]] && echo "$branches" | jq -e '.' > /dev/null 2>&1; then
+                echo "$branches" | jq -r '.[] | "- `" + . + "`"'
+              else
+                echo "⚠️ Could not parse branches output"
+              fi
+              echo ""
+              echo "✅ Check individual job results above for PR creation status"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

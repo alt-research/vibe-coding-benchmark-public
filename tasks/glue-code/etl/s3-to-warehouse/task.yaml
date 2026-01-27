@@ -1,0 +1,24 @@
+name: S3 to Data Warehouse Loader
+category: glue-code
+subcategory: etl
+description: Load S3 files into data warehouse with Go
+difficulty: medium
+stack: go
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/loader_test.go
+
+tags:
+  - go
+  - s3
+  - data-warehouse
+  - etl
+  - parquet
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

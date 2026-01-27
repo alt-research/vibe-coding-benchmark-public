@@ -1,0 +1,24 @@
+name: Mixpanel User Analytics
+category: api-integrations
+subcategory: analytics
+description: Track user behavior with Mixpanel in Go
+difficulty: medium
+stack: go
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/mixpanel_test.go
+
+tags:
+  - go
+  - mixpanel
+  - analytics
+  - user-behavior
+  - tracking
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

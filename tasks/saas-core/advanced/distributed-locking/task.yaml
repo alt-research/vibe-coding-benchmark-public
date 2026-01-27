@@ -1,0 +1,24 @@
+name: Distributed Locking with Redis
+category: saas-core
+subcategory: advanced
+description: Implement distributed locking using Redis with Redlock algorithm, handling edge cases like clock drift, network partitions, and automatic lock extension
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+
+tests:
+  functional: tests/lock.test.ts
+
+tags:
+  - typescript
+  - redis
+  - distributed-systems
+  - concurrency
+  - redlock
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

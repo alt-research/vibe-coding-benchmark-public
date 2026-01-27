@@ -1,0 +1,27 @@
+name: PDF Invoice Generation
+category: saas-core
+subcategory: billing
+description: Generate professional PDF invoices with line items and tax calculations
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_invoice.py
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - python
+  - pdf
+  - invoicing
+  - billing
+  - reporting
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

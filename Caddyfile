@@ -1,0 +1,3 @@
+vibecoding.llmbench.xyz {
+    reverse_proxy localhost:3000
+}

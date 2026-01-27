@@ -1,0 +1,16 @@
+name: Event Sourcing with Snapshots
+category: saas-core
+subcategory: advanced
+description: Build event sourcing system with snapshot optimization, event versioning, and projection rebuilding
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/eventsource.test.ts
+tags: [typescript, event-sourcing, cqrs, postgresql, kafka]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

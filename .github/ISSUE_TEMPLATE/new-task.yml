@@ -1,0 +1,106 @@
+name: 📝 New Benchmark Task
+description: Propose a new task to add to the benchmark
+title: "[Task] "
+labels: ["task", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing a new task to VibeCodingBench!
+        Please fill out the details below.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Which category does this task belong to?
+      options:
+        - saas-core (Auth, Payments, CRUD, Files)
+        - glue-code (Data Transform, PDF, API Sync)
+        - ai-integration (RAG, Structured Output, Agents)
+        - frontend (Figma-to-Code, Responsive, Animations)
+        - api-integrations (Stripe, OAuth, AWS, Webhooks)
+        - code-evolution (Migration, Refactor, Review)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Difficulty
+      description: Estimated difficulty level
+      options:
+        - easy (< 30 min for a developer)
+        - medium (30-60 min)
+        - hard (> 60 min)
+    validations:
+      required: true
+
+  - type: input
+    id: task-name
+    attributes:
+      label: Task Name
+      description: Short descriptive name
+      placeholder: "e.g., Implement GitHub OAuth"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Task Description
+      description: What should the AI agent accomplish?
+      placeholder: |
+        Add GitHub OAuth authentication to a Next.js app...
+    validations:
+      required: true
+
+  - type: textarea
+    id: success-criteria
+    attributes:
+      label: Success Criteria
+      description: How do we know the task is complete?
+      placeholder: |
+        - [ ] User can click "Sign in with GitHub"
+        - [ ] Session persists across refreshes
+        - [ ] Protected routes redirect to login
+    validations:
+      required: true
+
+  - type: dropdown
+    id: stack
+    attributes:
+      label: Technology Stack
+      description: Primary framework/language
+      options:
+        - nextjs-supabase
+        - fastapi-postgres
+        - go-fiber
+        - rust-axum
+        - python
+        - nodejs
+        - other
+    validations:
+      required: true
+
+  - type: textarea
+    id: tests
+    attributes:
+      label: Test Strategy
+      description: How should we verify the implementation?
+      placeholder: |
+        Playwright E2E tests for OAuth flow...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Contribution Checklist
+      options:
+        - label: I'm willing to create the task.yaml and tests
+          required: false
+        - label: This task is based on real-world developer needs
+          required: true
+        - label: This task is not already covered by existing tasks
+          required: true

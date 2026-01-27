@@ -1,0 +1,27 @@
+name: Invoice PDF Parser
+category: ai-integration
+subcategory: structured-output
+description: Extract structured data from invoice PDFs using LLM with function calling
+difficulty: hard
+stack: python
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/parser.test.py
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - llm
+  - structured-output
+  - pdf
+  - extraction
+  - function-calling
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

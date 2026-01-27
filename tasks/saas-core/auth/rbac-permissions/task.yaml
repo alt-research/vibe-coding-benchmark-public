@@ -1,0 +1,27 @@
+name: Role-Based Access Control System
+category: saas-core
+subcategory: auth
+description: Implement RBAC with hierarchical roles and fine-grained permissions in Java Spring
+difficulty: hard
+stack: java
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/RbacTest.java
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - java
+  - spring-boot
+  - rbac
+  - authorization
+  - security
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,24 @@
+name: S3 Presigned URL Uploads
+category: api-integrations
+subcategory: storage
+description: Implement secure file uploads with presigned URLs in Go
+difficulty: medium
+stack: go
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/s3_test.go
+
+tags:
+  - go
+  - aws
+  - s3
+  - presigned
+  - uploads
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

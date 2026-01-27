@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build --workspace=@vibecodingbench/dashboard",
+  "outputDirectory": "packages/dashboard/dist",
+  "installCommand": "npm install --workspace=@vibecodingbench/dashboard",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/((?!assets/).*)", "destination": "/index.html" }
+  ]
+}

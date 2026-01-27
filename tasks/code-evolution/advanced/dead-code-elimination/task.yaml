@@ -1,0 +1,16 @@
+name: Dead Code Elimination
+category: code-evolution
+subcategory: advanced
+description: Build dead code detection and elimination tool with cross-file analysis and safe removal
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/deadcode.test.ts
+tags: [typescript, static-analysis, tree-shaking, optimization]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

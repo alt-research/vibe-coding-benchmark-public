@@ -1,0 +1,16 @@
+name: Advanced Circuit Breaker
+category: saas-core
+subcategory: advanced
+description: Implement circuit breaker with adaptive thresholds, bulkhead isolation, and fallback strategies
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/circuitbreaker_test.go
+tags: [go, resilience, circuit-breaker, hystrix, bulkhead]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

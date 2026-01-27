@@ -1,0 +1,24 @@
+name: Discord Webhook Notifications
+category: api-integrations
+subcategory: communication
+description: Send Discord notifications via webhooks in Go
+difficulty: easy
+stack: go
+timeout: 300
+tokenLimit: 80000
+
+tests:
+  functional: tests/discord_test.go
+
+tags:
+  - go
+  - discord
+  - webhooks
+  - notifications
+  - embeds
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

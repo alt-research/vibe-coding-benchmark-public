@@ -1,0 +1,337 @@
+name: Handle Vercel PR Commands
+
+# Triggered by PR comments with commands like /deploy, /sync
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  check-command:
+    # Only run on PR comments, not issues
+    if: github.event.issue.pull_request != null
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    outputs:
+      command: ${{ steps.parse.outputs.command }}
+      is_authorized: ${{ steps.check_auth.outputs.is_authorized }}
+      pr_number: ${{ steps.parse.outputs.pr_number }}
+      base_branch: ${{ steps.get_pr.outputs.base_branch }}
+      is_deployment_pr: ${{ steps.get_pr.outputs.is_deployment_pr }}
+
+    steps:
+      - name: Parse comment
+        id: parse
+        run: |
+          # Use heredoc with cat to safely handle comment content (avoid command injection)
+          comment=$(cat <<'EOF'
+          ${{ github.event.comment.body }}
+          EOF
+          )
+          pr_number="${{ github.event.issue.number }}"
+
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+
+          # Check for commands (only match exact /deploy at start of line)
+          if echo "$comment" | grep -qE "^/deploy\s*$"; then
+            echo "command=deploy" >> "$GITHUB_OUTPUT"
+            echo "📦 Deploy command detected"
+          else
+            echo "command=none" >> "$GITHUB_OUTPUT"
+            echo "ℹ️ No recognized command"
+          fi
+
+      - name: Check authorization
+        id: check_auth
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Check if commenter has write permission or is a collaborator
+          repo="${{ github.repository }}"
+          user="${{ github.event.comment.user.login }}"
+
+          # Get user permission level
+          permission=$(gh api repos/$repo/collaborators/$user/permission --jq '.permission' 2>/dev/null || echo "none")
+
+          if [[ "$permission" == "admin" ]] || [[ "$permission" == "write" ]] || [[ "$permission" == "mastertain" ]]; then
+            echo "is_authorized=true" >> "$GITHUB_OUTPUT"
+            echo "✅ User $user has $permission permission"
+          else
+            echo "is_authorized=false" >> "$GITHUB_OUTPUT"
+            echo "❌ User $user has insufficient permission: $permission"
+          fi
+
+      - name: Get PR details
+        if: steps.parse.outputs.command != 'none'
+        id: get_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_number="${{ steps.parse.outputs.pr_number }}"
+          repo="${{ github.repository }}"
+
+          # Get PR base branch
+          pr_data=$(gh pr view $pr_number --repo $repo --json baseRefName,headRefName)
+          base_branch=$(echo "$pr_data" | jq -r '.baseRefName')
+          head_branch=$(echo "$pr_data" | jq -r '.headRefName')
+
+          echo "base_branch=$base_branch" >> "$GITHUB_OUTPUT"
+          echo "head_branch=$head_branch" >> "$GITHUB_OUTPUT"
+
+          echo "Base: $base_branch, Head: $head_branch"
+
+          # Validate this is a Vercel deployment PR
+          # Base branch should match: release/vercel/{staging|production}[/{subproject}]
+          # Head branch should be: main
+          if [[ ! "$base_branch" =~ ^release/vercel/(staging|production) ]]; then
+            echo "❌ This is not a Vercel deployment PR (base: $base_branch)"
+            echo "is_deployment_pr=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [[ "$head_branch" != "master" ]]; then
+            echo "❌ This PR is not from master branch (head: $head_branch)"
+            echo "is_deployment_pr=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "✅ Valid Vercel deployment PR detected"
+          echo "is_deployment_pr=true" >> "$GITHUB_OUTPUT"
+
+      - name: React to comment and add label
+        if: steps.parse.outputs.command != 'none' && steps.get_pr.outputs.is_deployment_pr == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          is_authorized="${{ steps.check_auth.outputs.is_authorized }}"
+          comment_id="${{ github.event.comment.id }}"
+          pr_number="${{ steps.parse.outputs.pr_number }}"
+          repo="${{ github.repository }}"
+
+          if [[ "$is_authorized" == "true" ]]; then
+            # Add 👀 eyes reaction to show we're processing
+            gh api \
+              --method POST \
+              repos/$repo/issues/comments/$comment_id/reactions \
+              -f content='eyes'
+
+            # Add "deploying" label to PR
+            gh pr edit $pr_number --repo $repo --add-label "deploying" || true
+
+            # Comment that deployment is starting
+            gh pr comment $pr_number --repo $repo --body "$(cat <<EOF
+          🚀 **Deployment started**
+
+          Initiated by: @${{ github.event.comment.user.login }}
+
+          The release branch is being synced with main. This may take a moment...
+
+          This PR will automatically close once the sync is complete.
+          EOF
+          )"
+          else
+            # Add 👎 thumbs down if unauthorized
+            gh api \
+              --method POST \
+              repos/$repo/issues/comments/$comment_id/reactions \
+              -f content='-1'
+
+            # Comment explaining why
+            gh pr comment $pr_number --repo $repo \
+              --body "❌ @${{ github.event.comment.user.login }} You don't have permission to use deployment commands. Only mastertainers with write access can trigger deployments."
+          fi
+
+  deploy:
+    needs: check-command
+    if: |
+      needs.check-command.outputs.command == 'deploy' &&
+      needs.check-command.outputs.is_authorized == 'true' &&
+      needs.check-command.outputs.is_deployment_pr == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge PR via rebase
+        id: sync
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_number="${{ needs.check-command.outputs.pr_number }}"
+          base_branch="${{ needs.check-command.outputs.base_branch }}"
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Fetch latest
+          git fetch origin "$base_branch"
+          git fetch origin master
+
+          echo "🔄 Merging PR #$pr_number (main → $base_branch)..."
+
+          # Checkout release branch
+          git checkout "$base_branch"
+
+          # Check if already up to date
+          behind_count=$(git rev-list --count "$base_branch..origin/master")
+
+          if [[ $behind_count -eq 0 ]]; then
+            echo "status=up_to_date" >> "$GITHUB_OUTPUT"
+            echo "✅ Branch is already up to date"
+            # Close PR manually since there's nothing to merge
+            gh pr close $pr_number --repo ${{ github.repository }} --comment "✅ Branch is already up to date. Closing PR." || true
+            exit 0
+          fi
+
+          echo "Branch is $behind_count commits behind main"
+
+          # Extract environment from base_branch (staging or production)
+          if [[ "$base_branch" =~ ^release/vercel/([^/]+) ]]; then
+            environment="${BASH_REMATCH[1]}"
+            echo "environment=$environment" >> "$GITHUB_OUTPUT"
+          fi
+
+          # Extract subproject if exists (for monorepo)
+          if [[ "$base_branch" =~ ^release/vercel/[^/]+/(.+)$ ]]; then
+            subproject="${BASH_REMATCH[1]}"
+            echo "subproject=$subproject" >> "$GITHUB_OUTPUT"
+          else
+            echo "subproject=" >> "$GITHUB_OUTPUT"
+          fi
+
+          # Try rebase first (cleanest)
+          if git rebase origin/master; then
+            echo "✅ Successfully rebased $base_branch onto master"
+            git push origin "$base_branch" --force-with-lease
+            echo "status=rebased" >> "$GITHUB_OUTPUT"
+            echo "method=rebase" >> "$GITHUB_OUTPUT"
+            echo "commits_synced=$behind_count" >> "$GITHUB_OUTPUT"
+            # PR will auto-close when branches are identical
+          else
+            # Rebase failed - force sync by resetting to master
+            echo "⚠️ Rebase failed, force-syncing branch to master"
+            git rebase --abort 2>/dev/null || true
+
+            # Force reset to master (nuclear option but guarantees sync)
+            git reset --hard origin/master
+            git push origin "$base_branch" --force
+
+            echo "✅ Force-synced $base_branch to match master"
+            echo "status=force_synced" >> "$GITHUB_OUTPUT"
+            echo "method=force_reset" >> "$GITHUB_OUTPUT"
+            echo "commits_synced=$behind_count" >> "$GITHUB_OUTPUT"
+            # PR will auto-close when branches are identical
+          fi
+
+      - name: Trigger Vercel deployment
+        if: steps.sync.outputs.status == 'rebased' || steps.sync.outputs.status == 'force_synced'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          base_branch="${{ needs.check-command.outputs.base_branch }}"
+          environment="${{ steps.sync.outputs.environment }}"
+          subproject="${{ steps.sync.outputs.subproject }}"
+
+          echo "🚀 Triggering Vercel deployment workflow..."
+          echo "  Environment: $environment"
+          echo "  Subproject: ${subproject:-'(single repo)'}"
+
+          # Trigger the deployment workflow
+          if [[ -n "$subproject" ]]; then
+            gh workflow run vercel-deploy.yml \
+              --ref "$base_branch" \
+              -f environment="$environment" \
+              -f subproject_dir="$subproject"
+          else
+            gh workflow run vercel-deploy.yml \
+              --ref "$base_branch" \
+              -f environment="$environment"
+          fi
+
+          echo "✅ Deployment workflow triggered"
+
+      - name: Comment success
+        if: steps.sync.outputs.status == 'rebased' || steps.sync.outputs.status == 'merged' || steps.sync.outputs.status == 'force_synced'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_number="${{ needs.check-command.outputs.pr_number }}"
+          base_branch="${{ needs.check-command.outputs.base_branch }}"
+          status="${{ steps.sync.outputs.status }}"
+          method="${{ steps.sync.outputs.method }}"
+          commits="${{ steps.sync.outputs.commits_synced }}"
+          comment_id="${{ github.event.comment.id }}"
+
+          # Add rocket reaction to original comment
+          gh api \
+            --method POST \
+            repos/${{ github.repository }}/issues/comments/$comment_id/reactions \
+            -f content='rocket'
+
+          # Post success comment with appropriate message
+          if [[ "$method" == "force_reset" ]]; then
+            gh pr comment $pr_number --repo ${{ github.repository }} --body "$(cat <<EOF
+          ⚠️ **Deployment executed (with force-sync)**
+
+          - **Branch**: \`$base_branch\`
+          - **Method**: Force reset to master (conflicts were present)
+          - **Commits deployed**: $commits
+          - **Approved by**: @${{ github.event.comment.user.login }}
+
+          The release branch was force-synced to match master due to conflicts. Any diverged commits were discarded.
+
+          **Next:** Vercel deployment workflow will start automatically.
+          EOF
+          )"
+          else
+            gh pr comment $pr_number --repo ${{ github.repository }} --body "$(cat <<EOF
+          ✅ **Deployment approved and executed!**
+
+          - **Branch**: \`$base_branch\`
+          - **Method**: $method
+          - **Commits deployed**: $commits
+          - **Approved by**: @${{ github.event.comment.user.login }}
+
+          The release branch has been synced with main. This PR will close automatically.
+
+          **Next:** Vercel deployment workflow will start automatically.
+          EOF
+          )"
+          fi
+
+      - name: Comment if up to date
+        if: steps.sync.outputs.status == 'up_to_date'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_number="${{ needs.check-command.outputs.pr_number }}"
+          comment_id="${{ github.event.comment.id }}"
+
+          # Add +1 reaction
+          gh api \
+            --method POST \
+            repos/${{ github.repository }}/issues/comments/$comment_id/reactions \
+            -f content='+1'
+
+          gh pr comment $pr_number --repo ${{ github.repository }} --body "✅ Branch is already up to date. Ready to merge!"
+
+      - name: Remove deploying label
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_number="${{ needs.check-command.outputs.pr_number }}"
+          gh pr edit $pr_number --repo ${{ github.repository }} --remove-label "deploying" || true

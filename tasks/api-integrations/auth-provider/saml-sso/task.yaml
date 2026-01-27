@@ -1,0 +1,24 @@
+name: Enterprise SAML SSO
+category: api-integrations
+subcategory: auth-provider
+description: Implement SAML 2.0 SSO with Java Spring
+difficulty: hard
+stack: java
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/SamlTest.java
+
+tags:
+  - java
+  - saml
+  - sso
+  - enterprise
+  - spring
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,27 @@
+name: TOTP Multi-Factor Authentication
+category: saas-core
+subcategory: auth
+description: Implement time-based one-time password (TOTP) MFA with QR code setup
+difficulty: hard
+stack: nextjs-supabase
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/mfa.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - authentication
+  - mfa
+  - totp
+  - security
+  - qr-code
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

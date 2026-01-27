@@ -1,0 +1,16 @@
+name: LLM Streaming Pipeline
+category: ai-integration
+subcategory: advanced
+description: Build streaming pipeline with token-level processing, real-time transformation, and multi-destination fanout
+difficulty: hard
+stack: typescript
+timeout: 1500
+tokenLimit: 300000
+tests:
+  functional: tests/streaming.test.ts
+tags: [typescript, streaming, sse, websocket, transformation]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

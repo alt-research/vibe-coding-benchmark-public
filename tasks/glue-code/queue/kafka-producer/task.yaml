@@ -1,0 +1,27 @@
+name: High-Throughput Kafka Producer
+category: glue-code
+subcategory: queue
+description: Implement high-throughput Kafka producer in Go
+difficulty: medium
+stack: go
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/producer_test.go
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - go
+  - kafka
+  - streaming
+  - producer
+  - high-throughput
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

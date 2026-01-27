@@ -1,0 +1,16 @@
+name: Intelligent Context Management
+category: ai-integration
+subcategory: advanced
+description: Build context management with dynamic compression, relevance scoring, hierarchical summarization, and context window optimization
+difficulty: hard
+stack: python
+timeout: 1500
+tokenLimit: 300000
+tests:
+  functional: tests/test_context.py
+tags: [python, context, llm, compression, embeddings]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

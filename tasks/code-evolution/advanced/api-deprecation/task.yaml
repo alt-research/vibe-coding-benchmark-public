@@ -1,0 +1,16 @@
+name: API Deprecation Manager
+category: code-evolution
+subcategory: advanced
+description: Build API deprecation system with usage tracking, migration guides, and sunset enforcement
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/deprecation_test.go
+tags: [go, api, deprecation, migration, versioning]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

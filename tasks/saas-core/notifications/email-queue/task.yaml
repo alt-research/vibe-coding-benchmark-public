@@ -1,0 +1,27 @@
+name: Async Email Notification Queue
+category: saas-core
+subcategory: notifications
+description: Implement async email notification system with queue processing in Python
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_email_queue.py
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - python
+  - celery
+  - email
+  - queue
+  - notifications
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

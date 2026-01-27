@@ -1,0 +1,27 @@
+name: Change Data Capture Pipeline
+category: glue-code
+subcategory: etl
+description: Implement CDC with Debezium and TypeScript
+difficulty: hard
+stack: nodejs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/cdc.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - typescript
+  - debezium
+  - cdc
+  - kafka
+  - streaming
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

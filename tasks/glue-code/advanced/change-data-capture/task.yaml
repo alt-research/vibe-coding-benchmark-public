@@ -1,0 +1,16 @@
+name: Change Data Capture System
+category: glue-code
+subcategory: advanced
+description: Build CDC system with log-based capture, schema tracking, and multi-sink fanout
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/cdc_test.go
+tags: [go, debezium, postgresql, kafka, cdc]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

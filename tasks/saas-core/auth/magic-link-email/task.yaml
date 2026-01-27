@@ -1,0 +1,27 @@
+name: Magic Link Email Authentication
+category: saas-core
+subcategory: auth
+description: Implement passwordless authentication using magic links with FastAPI
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_magic_link.py
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - python
+  - fastapi
+  - authentication
+  - passwordless
+  - email
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

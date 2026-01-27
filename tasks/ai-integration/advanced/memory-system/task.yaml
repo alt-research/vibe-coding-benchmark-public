@@ -1,0 +1,16 @@
+name: Long-term Memory System
+category: ai-integration
+subcategory: advanced
+description: Build memory system with episodic and semantic memory, retrieval optimization, and memory consolidation
+difficulty: hard
+stack: python
+timeout: 1500
+tokenLimit: 300000
+tests:
+  functional: tests/test_memory.py
+tags: [python, memory, embeddings, vector-db, retrieval]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

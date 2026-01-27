@@ -1,0 +1,24 @@
+name: Google Maps Geocoding
+category: api-integrations
+subcategory: maps
+description: Implement address geocoding with Google Maps
+difficulty: easy
+stack: nodejs
+timeout: 300
+tokenLimit: 80000
+
+tests:
+  functional: tests/geocoding.test.ts
+
+tags:
+  - typescript
+  - google-maps
+  - geocoding
+  - addresses
+  - location
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

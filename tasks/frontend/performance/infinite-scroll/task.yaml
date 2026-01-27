@@ -1,0 +1,24 @@
+name: Virtualized Infinite Scroll
+category: frontend
+subcategory: performance
+description: Build infinite scroll with virtualization in React
+difficulty: medium
+stack: nextjs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/scroll.test.tsx
+
+tags:
+  - react
+  - performance
+  - virtual-scroll
+  - infinite
+  - optimization
+
+evaluation:
+  functional: 0.4
+  quality: 0.3
+  cost: 0.15
+  speed: 0.15

@@ -1,0 +1,24 @@
+name: Page Transition Animations
+category: frontend
+subcategory: animation
+description: Build smooth page transitions with React
+difficulty: medium
+stack: nextjs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/transitions.test.tsx
+
+tags:
+  - react
+  - animation
+  - framer-motion
+  - transitions
+  - ux
+
+evaluation:
+  functional: 0.3
+  visual: 0.4
+  quality: 0.2
+  speed: 0.1

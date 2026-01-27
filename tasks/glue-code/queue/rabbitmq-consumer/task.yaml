@@ -1,0 +1,27 @@
+name: RabbitMQ Message Consumer
+category: glue-code
+subcategory: queue
+description: Implement reliable RabbitMQ consumer with Python
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_consumer.py
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - python
+  - rabbitmq
+  - queue
+  - messaging
+  - async
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

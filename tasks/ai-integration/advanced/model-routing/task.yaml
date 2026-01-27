@@ -1,0 +1,16 @@
+name: Intelligent Model Router
+category: ai-integration
+subcategory: advanced
+description: Build model router with cost optimization, capability matching, fallback chains, and A/B testing
+difficulty: hard
+stack: python
+timeout: 1500
+tokenLimit: 300000
+tests:
+  functional: tests/test_router.py
+tags: [python, llm, routing, optimization, load-balancing]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

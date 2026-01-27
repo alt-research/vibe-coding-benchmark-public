@@ -1,0 +1,20 @@
+# Default owners for everything
+# Add your GitHub username or team here
+# * @your-username
+
+# Task categories
+# /tasks/saas-core/
+# /tasks/glue-code/
+# /tasks/ai-integration/
+# /tasks/frontend/
+# /tasks/api-integrations/
+# /tasks/code-evolution/
+
+# Core packages
+# /packages/cli/
+# /packages/evaluator/
+# /packages/leaderboard/
+
+# Documentation
+# /docs/
+# *.md

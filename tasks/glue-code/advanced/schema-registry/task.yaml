@@ -1,0 +1,16 @@
+name: Schema Registry Service
+category: glue-code
+subcategory: advanced
+description: Build schema registry with compatibility checking, versioning, and automatic code generation
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/registry_test.go
+tags: [go, avro, protobuf, schema, compatibility]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

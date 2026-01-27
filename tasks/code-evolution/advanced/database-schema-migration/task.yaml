@@ -1,0 +1,16 @@
+name: Zero-Downtime Schema Migration
+category: code-evolution
+subcategory: advanced
+description: Build schema migration system supporting zero-downtime changes with rollback and data backfill
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/schema_test.go
+tags: [go, postgresql, migration, schema, zero-downtime]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

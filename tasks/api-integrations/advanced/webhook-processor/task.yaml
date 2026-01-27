@@ -1,0 +1,16 @@
+name: Webhook Processing Engine
+category: api-integrations
+subcategory: advanced
+description: Build webhook processor with signature verification, filtering, transformation, and delivery tracking
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/webhook_test.go
+tags: [go, webhooks, processing, queue, transformation]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

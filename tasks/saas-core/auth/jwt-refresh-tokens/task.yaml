@@ -1,0 +1,27 @@
+name: JWT Refresh Token Rotation
+category: saas-core
+subcategory: auth
+description: Implement JWT authentication with secure refresh token rotation in Go
+difficulty: medium
+stack: go
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/auth_test.go
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - go
+  - jwt
+  - authentication
+  - security
+  - tokens
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,16 @@
+name: Advanced Tool Use Orchestration
+category: ai-integration
+subcategory: advanced
+description: Build tool orchestration with parallel execution, dependency resolution, error recovery, and sandboxed execution
+difficulty: hard
+stack: python
+timeout: 1500
+tokenLimit: 300000
+tests:
+  functional: tests/test_tools.py
+tags: [python, function-calling, tools, sandbox, orchestration]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

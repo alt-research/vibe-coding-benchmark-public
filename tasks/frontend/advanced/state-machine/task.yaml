@@ -1,0 +1,16 @@
+name: Visual State Machine Editor
+category: frontend
+subcategory: advanced
+description: Build visual state machine editor with drag-drop, validation, code generation, and real-time simulation
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/statemachine.test.ts
+tags: [typescript, react, xstate, canvas, visualization]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

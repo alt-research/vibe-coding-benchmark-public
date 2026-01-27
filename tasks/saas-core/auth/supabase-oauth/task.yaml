@@ -1,0 +1,32 @@
+name: Supabase Google OAuth
+category: saas-core
+subcategory: auth
+description: Implement Google OAuth authentication using Next.js and Supabase
+difficulty: medium
+stack: nextjs-supabase
+timeout: 300
+tokenLimit: 80000
+template: nextjs-supabase
+
+promptFile: PROMPT.md
+
+tests:
+  functional: tests/auth.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+weight: 1.5
+tags:
+  - typescript
+  - nextjs
+  - supabase
+  - oauth
+  - auth
+
+evaluation:
+  functional: 0.5
+  visual: 0.1
+  quality: 0.2
+  cost: 0.1
+  speed: 0.1

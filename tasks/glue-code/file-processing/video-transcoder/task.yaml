@@ -1,0 +1,27 @@
+name: Video Transcoder Service
+category: glue-code
+subcategory: file-processing
+description: FFmpeg-based video transcoding in Go
+difficulty: hard
+stack: go
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/transcode_test.go
+
+docker:
+  compose: docker-compose.yaml
+
+tags:
+  - go
+  - ffmpeg
+  - video
+  - transcoding
+  - streaming
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

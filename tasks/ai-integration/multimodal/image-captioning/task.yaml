@@ -1,0 +1,24 @@
+name: Image Caption Generator
+category: ai-integration
+subcategory: multimodal
+description: Generate image descriptions using vision models
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_captioning.py
+
+tags:
+  - python
+  - vision
+  - multimodal
+  - llm
+  - images
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

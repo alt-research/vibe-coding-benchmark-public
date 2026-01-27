@@ -1,0 +1,24 @@
+name: Screen Reader Navigation
+category: frontend
+subcategory: accessibility
+description: Build WCAG compliant navigation in React
+difficulty: medium
+stack: nextjs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/a11y.test.tsx
+
+tags:
+  - react
+  - accessibility
+  - wcag
+  - aria
+  - screen-reader
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

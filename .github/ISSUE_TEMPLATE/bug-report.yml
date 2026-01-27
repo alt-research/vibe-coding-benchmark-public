@@ -1,0 +1,76 @@
+name: 🐛 Bug Report
+description: Report a bug in the benchmark framework
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this bug!
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which part of the benchmark is affected?
+      options:
+        - CLI (vibecodingbench command)
+        - Evaluator (scoring/tests)
+        - Docker runtime
+        - Leaderboard
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What happened?
+      placeholder: |
+        When running `vibecodingbench run ...`, the following error occurred...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this bug?
+      placeholder: |
+        1. Run `vibecodingbench run task-id --agent claude`
+        2. Wait for evaluation to complete
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Your environment details
+      placeholder: |
+        - OS: macOS 14.0
+        - Node.js: 22.0.0
+        - Docker: 25.0.0
+        - vibecodingbench version: 0.1.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Any relevant error messages or logs
+      render: shell
+    validations:
+      required: false

@@ -1,0 +1,24 @@
+name: Fix SQL Injection
+category: code-evolution
+subcategory: security
+description: Fix SQL injection vulnerabilities in Python
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_security.py
+
+tags:
+  - python
+  - security
+  - sql
+  - injection
+  - owasp
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

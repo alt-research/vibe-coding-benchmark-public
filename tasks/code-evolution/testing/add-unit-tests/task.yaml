@@ -1,0 +1,24 @@
+name: Add Unit Tests
+category: code-evolution
+subcategory: testing
+description: Add unit tests to untested TypeScript code
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/coverage.test.ts
+
+tags:
+  - typescript
+  - testing
+  - jest
+  - unit-tests
+  - tdd
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

@@ -1,0 +1,24 @@
+name: Codebase Q&A Assistant
+category: ai-integration
+subcategory: rag-chatbot
+description: Build RAG-powered codebase Q&A assistant in TypeScript
+difficulty: hard
+stack: nodejs
+timeout: 900
+tokenLimit: 200000
+
+tests:
+  functional: tests/codeqa.test.ts
+
+tags:
+  - typescript
+  - rag
+  - code
+  - embeddings
+  - assistant
+
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

@@ -1,0 +1,37 @@
+name: Express to Fastify Migration
+category: code-evolution
+subcategory: legacy-migration
+description: Migrate a REST API from Express.js to Fastify while preserving all functionality
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+template: base-code/
+
+tests:
+  functional: tests/api.test.ts
+
+docker:
+  compose: docker-compose.yaml
+
+weight: 1.5
+
+tags:
+  - migration
+  - express
+  - fastify
+  - nodejs
+  - api
+
+constraints:
+  - All existing integration tests must pass
+  - API endpoints must remain identical
+  - Response formats must match exactly
+  - Error handling patterns preserved
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

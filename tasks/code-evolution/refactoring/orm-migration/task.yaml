@@ -1,0 +1,24 @@
+name: SQLAlchemy to SQLModel
+category: code-evolution
+subcategory: refactoring
+description: Migrate SQLAlchemy to async SQLModel
+difficulty: medium
+stack: python
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/test_models.py
+
+tags:
+  - python
+  - sqlalchemy
+  - sqlmodel
+  - async
+  - orm
+
+evaluation:
+  functional: 0.5
+  quality: 0.3
+  cost: 0.1
+  speed: 0.1

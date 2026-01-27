@@ -1,0 +1,16 @@
+name: Web Worker Task Scheduler
+category: frontend
+subcategory: advanced
+description: Build web worker pool with priority queuing, task cancellation, and progress reporting
+difficulty: hard
+stack: typescript
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/worker.test.ts
+tags: [typescript, web-worker, concurrency, scheduling]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15

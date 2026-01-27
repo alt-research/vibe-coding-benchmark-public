@@ -1,0 +1,24 @@
+name: Segment Event Tracking
+category: api-integrations
+subcategory: analytics
+description: Implement event tracking pipeline with Segment
+difficulty: medium
+stack: nodejs
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/segment.test.ts
+
+tags:
+  - typescript
+  - segment
+  - analytics
+  - tracking
+  - events
+
+evaluation:
+  functional: 0.5
+  quality: 0.2
+  cost: 0.15
+  speed: 0.15

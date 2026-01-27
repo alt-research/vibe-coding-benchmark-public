@@ -1,0 +1,24 @@
+name: Java to Kotlin Migration
+category: code-evolution
+subcategory: legacy-migration
+description: Migrate Java codebase to idiomatic Kotlin
+difficulty: medium
+stack: kotlin
+timeout: 600
+tokenLimit: 150000
+
+tests:
+  functional: tests/MainTest.kt
+
+tags:
+  - kotlin
+  - java
+  - migration
+  - spring
+  - jvm
+
+evaluation:
+  functional: 0.4
+  quality: 0.4
+  cost: 0.1
+  speed: 0.1

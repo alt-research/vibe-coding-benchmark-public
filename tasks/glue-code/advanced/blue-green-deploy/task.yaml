@@ -1,0 +1,16 @@
+name: Blue-Green Deployment Controller
+category: glue-code
+subcategory: advanced
+description: Build deployment controller with traffic shifting, health validation, and automatic rollback
+difficulty: hard
+stack: go
+timeout: 1200
+tokenLimit: 250000
+tests:
+  functional: tests/deploy_test.go
+tags: [go, kubernetes, istio, deployment, traffic-management]
+evaluation:
+  functional: 0.5
+  quality: 0.25
+  cost: 0.1
+  speed: 0.15
