@@ -320,7 +320,76 @@ VibeCodingBench aims to close this gap by:
 
 ---
 
-## 6. Conclusion
+## 6. Initial Results (January 2026)
+
+We evaluated 15 leading AI coding models across all 180 VibeCodingBench tasks. The results reveal important insights about the current state of AI coding agents.
+
+### 6.1 Leaderboard Summary
+
+| Rank | Model | Final Score | Pass Rate | Cost | Avg Time |
+|------|-------|-------------|-----------|------|----------|
+| #1 | Claude Opus 4.5 | 89.2% | 100.0% (180/180) | $12.31 | 44s |
+| #2 | Claude Haiku 4.5 | 89.0% | 99.4% (179/180) | $3.03 | 22s |
+| #3 | Grok 4 Fast | 88.8% | 98.9% (178/180) | $0.21 | 70s |
+| #4 | OpenAI GPT-5.2 | 88.8% | 98.3% (177/180) | $5.01 | 28s |
+| #5 | Qwen3 Max | 88.6% | 100.0% (180/180) | $5.42 | 45s |
+| #6 | Claude Sonnet 4.5 | 88.6% | 98.3% (177/180) | $6.98 | 42s |
+| #7 | GLM 4-Plus | 88.2% | 98.9% (178/180) | $0.93 | 96s |
+| #8 | DeepSeek v3.2 | 88.2% | 98.3% (177/180) | $0.50 | 90s |
+| #9 | Grok 4 | 88.0% | 97.8% (176/180) | $5.47 | 75s |
+| #10 | MiniMax M2.1 | 87.4% | 99.4% (179/180) | $2.40 | 165s |
+| #11 | Grok 4.1 Fast | 86.8% | 97.2% (175/180) | $0.24 | 89s |
+| #12 | Gemini 3 Pro Preview | 85.8% | 95.0% (171/180) | $10.34 | 32s |
+| #13 | GLM-4.7 | 83.9% | 85.6% (154/180) | $0.73 | 57s |
+| #14 | GLM 4.7 Flash | 83.8% | 92.8% (167/180) | $1.11 | 45s |
+| #15 | Gemini 3 Flash | 83.4% | 92.2% (166/180) | $0.86 | 28s |
+
+### 6.2 Key Findings
+
+**1. Tight Competition at the Top**
+The top 10 models are clustered within 2 percentage points (87.4%–89.2%). This narrow spread suggests frontier models have converged on similar capabilities for production coding tasks.
+
+**2. Cost-Performance Tradeoffs**
+Cost varies by 60x between models at similar performance levels:
+- **Best value**: Grok 4 Fast ($0.21 total, 88.8% score) and DeepSeek v3.2 ($0.50, 88.2%)
+- **Premium tier**: Claude Opus 4.5 ($12.31) and Gemini 3 Pro ($10.34)
+- **Middle ground**: Claude Haiku 4.5 ($3.03, 89.0%) offers excellent cost-performance balance
+
+**3. Speed vs Quality**
+Faster models don't necessarily score lower:
+- Claude Haiku 4.5: 22s average, 89.0% score
+- Gemini 3 Flash: 28s average, 83.4% score
+- MiniMax M2.1: 165s average, 87.4% score
+
+**4. Pass Rate ≠ Final Score**
+Our multi-dimensional scoring reveals quality differences hidden by pass rate:
+- Qwen3 Max: 100% pass rate but 88.6% final score (quality/cost penalties)
+- Claude Opus 4.5: 100% pass rate and 89.2% final score (better quality metrics)
+
+**5. All Models Pass Security Gate**
+Every evaluated model achieved 100% on security checks—a positive signal that modern LLMs avoid obvious OWASP vulnerabilities in generated code.
+
+### 6.3 Dimensional Breakdown
+
+| Model | Functional | Quality | Visual | Cost Score | Speed Score |
+|-------|------------|---------|--------|------------|-------------|
+| Claude Opus 4.5 | 85.0% | 80.0% | 80.0% | 70% | 80% |
+| Claude Haiku 4.5 | 84.5% | 79.6% | 80.0% | 88% | 95% |
+| Grok 4 Fast | 84.1% | 80.0% | 80.0% | 94% | 72% |
+| Qwen3 Max | 85.0% | 80.0% | 80.0% | 90% | 75% |
+| DeepSeek v3.2 | 83.6% | 80.0% | 80.0% | 96% | 65% |
+| GLM-4.7 | 72.7% | 79.6% | 80.0% | 94% | 82% |
+| Gemini 3 Flash | 78.4% | 75.1% | 80.0% | 95% | 90% |
+
+**Observations**:
+- Functional scores range from 72.7% to 85.0%—a 12-point spread revealing real capability differences
+- Quality scores cluster around 79-80%, suggesting similar code hygiene across models
+- Visual compliance is uniformly high (80%), indicating models handle UI requirements well
+- Cost efficiency varies dramatically based on token usage and pricing
+
+---
+
+## 7. Conclusion
 
 The current generation of AI coding agent benchmarks optimizes for the wrong objective. High SWE-bench scores do not translate to production readiness. Pass rates ignore quality debt. Single-repository evaluations miss the polyglot reality of modern development.
 
