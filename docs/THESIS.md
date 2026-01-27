@@ -1,4 +1,4 @@
-# VibeCodingBench: Toward Ecological Validity in AI Coding Agent Evaluation
+# VibeCodingBench: Benchmark Vibe Coding Models for Fun
 
 **A Position Paper on Benchmark Methodology**
 
@@ -369,4 +369,4 @@ The ultimate test of an AI coding agent is not whether it can fix a bug in sciki
 
 ---
 
-*VibeCodingBench is an open-source project. Contributions welcome at https://github.com/vibecodingbench/vibecodingbench*
+*VibeCodingBench is a project by Alt Research. Contributions welcome at https://github.com/alt-research/vibe-coding-benchmark-public*
