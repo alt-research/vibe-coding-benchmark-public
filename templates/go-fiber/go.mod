@@ -3,7 +3,7 @@ module codingbench-go-fiber
 go 1.24.0
 
 require (
-	github.com/gofiber/fiber/v2 v2.52.9
+	github.com/gofiber/fiber/v2 v2.52.11
 	github.com/joho/godotenv v1.5.1
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/gorm v1.25.12
