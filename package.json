@@ -45,7 +45,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "overrides": {
     "esbuild": "^0.25.0",
-    "hono": ">=4.11.10",
-    "ajv": ">=8.18.0"
+    "hono": ">=4.12.2",
+    "ajv": ">=8.18.0",
+    "rollup": ">=4.59.0"
   }
 }
