@@ -20,7 +20,7 @@
     "@hono/zod-validator": "^0.4.0",
     "@neondatabase/serverless": "^0.7.0",
     "drizzle-orm": "^0.45.2",
-    "hono": "^4.12.12",
+    "hono": "^4.12.14",
     "postgres": "^3.4.0",
     "vite": "7.3.2",
     "zod": "^3.22.0"
