@@ -22,7 +22,7 @@
     "drizzle-orm": "^0.45.2",
     "hono": "^4.12.14",
     "postgres": "^3.4.0",
-    "vite": "7.3.2",
+    "vite": "8.0.5",
     "zod": "^3.22.0"
   },
   "devDependencies": {
