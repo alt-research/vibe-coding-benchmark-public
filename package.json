@@ -1,7 +1,7 @@
 {
   "name": "vibecodingbench",
   "version": "0.1.0",
-  "description": "Benchmark for evaluating AI coding agents on real-world developer tasks",
+  "description": "Benchmark for evaluating AI coding agents on real-world developer tasks test",
   "private": true,
   "workspaces": [
     "packages/*"
