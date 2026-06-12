@@ -297,6 +297,19 @@ vibecodingbench/
 
 ## Deployment
 
+### GitHub Pages (Actions)
+
+The repository deploys the Vite dashboard from `packages/dashboard` through
+`.github/workflows/pages.yaml`.
+
+1. In GitHub, open **Settings → Pages** and set **Build and deployment → Source**
+   to **GitHub Actions**.
+2. Push to `main`, or run **Deploy Dashboard To GitHub Pages** manually from the
+   Actions tab.
+3. By default the build uses `/<repo-name>/` as the Vite base path for a project
+   Pages URL. If you attach a custom domain, set the repository variable
+   `PAGES_BASE_PATH` to `/`.
+
 ### Self-Hosted (Docker)
 
 ```bash
