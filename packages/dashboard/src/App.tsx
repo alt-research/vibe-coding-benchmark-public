@@ -65,6 +65,8 @@ const CHART_COLORS = [
   '#14b8a6', '#a855f7', '#84cc16', '#0ea5e9',
 ];
 
+const faviconUrl = `${import.meta.env.BASE_URL}favicon.svg`;
+
 interface LeaderboardEntry {
   rank: number;
   agentName: string;
@@ -1415,7 +1417,7 @@ export default function App() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <Link to="/" className="flex items-center gap-3">
-                <img src="/favicon.svg" alt="VibeCodingBench" className="w-9 h-9" />
+                <img src={faviconUrl} alt="VibeCodingBench" className="w-9 h-9" />
                 <span className="text-lg font-semibold text-slate-900">VibeCodingBench</span>
               </Link>
               <div className="hidden md:flex items-center gap-1">
