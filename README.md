@@ -244,7 +244,7 @@ Security Fail → Final = 0
 | GLM 4.7 Flash | 78.9% | 79.6% | $0.0062 | 3,611 |
 | Gemini 3 Flash | 78.4% | 75.1% | $0.0048 | 2,133 |
 
-**Live Dashboard**: https://vibecoding.llmbench.xyz
+**Live Dashboard**: http://benchmark.altllm.ai/
 
 ## Contributing
 
@@ -307,7 +307,7 @@ The repository deploys the Vite dashboard from `packages/dashboard` through
 2. Push to `main`, or run **Deploy Dashboard To GitHub Pages** manually from the
    Actions tab.
 3. By default the build uses `/<repo-name>/` as the Vite base path for a project
-   Pages URL. If you attach a custom domain, set the repository variable
+   Pages URL. For `http://benchmark.altllm.ai/`, set the repository variable
    `PAGES_BASE_PATH` to `/`.
 
 ### Self-Hosted (Docker)
