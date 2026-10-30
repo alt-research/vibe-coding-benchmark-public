@@ -52,7 +52,7 @@
     "minimatch": ">=10.2.3",
     "rollup": ">=4.59.0",
     "@babel/core": "7.29.6",
-    "protobufjs": "7.6.3",
+    "protobufjs": "7.6.6",
     "vite@>=8 <8.1.6": "8.1.6"
   }
 }
