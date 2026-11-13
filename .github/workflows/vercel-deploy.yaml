@@ -20,7 +20,7 @@ name: Deploy App To Vercel
 # - VERCEL_ORG_ID: Your Vercel organization ID
 
 env:
-  NODE_VERSION: "22.x"
+  NODE_VERSION: "22.23.4"
   PNPM_VERSION: 9
 
 on:
